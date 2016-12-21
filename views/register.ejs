@@ -1,0 +1,22 @@
+
+<% include partials/header %>
+<div class="Register Wrapper">
+  <div class="Register__errors">
+    <div class="Register__error"></div>
+  </div>
+  <h2 class="Register__title Title">Sign up</h2>
+  <div class="Register__body">
+    <form method="post" class="Register__form"><!-- @submit.prevent="register" -->
+      <div class="Form__row">
+        <input type="text" name="lname" placeholder="Nom" class="Form__entry Input__text Input__text--rounded" />
+        <input type="text" name="fname" placeholder="Prénom" class="Form__entry Input__text Input__text--rounded" />
+      </div>
+      <input type="text" name="username" placeholder="Login" class="Form__entry Input__text Input__text--rounded" />
+      <input type="email" name="email" placeholder="Email address" class="Form__entry Input__text Input__text--rounded" />
+      <input type="password" name="password" placeholder="Password" class="Form__entry Input__text Input__text--rounded" />
+      <input type="password" name="password2" placeholder="Confirm password" class="Form__entry Input__text Input__text--rounded" />
+      <input type="submit" value="Sign up" class='Input__submit Input__submit--rounded'/>
+    </form>
+  </div>
+</div>
+<%include partials/footer %>

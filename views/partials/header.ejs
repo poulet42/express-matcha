@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title><%= title %></title>
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<script src="/javascripts/jquery.js"></script>
+</head>
+<body>
+	<header class='Header'>
+		<nav class='Header__nav'>
+			<ul class='Header__list'>
+				<li class="Header__item">
+					<a href="/foo" class="Header__link">Test</a>
+				</li>
+				<li class="Header__item">
+					<a href="/register" class="Header__link">Register</a>
+				</li>
+				<li class="Header__item">
+					<a href="#" class="Header__link Modal__toggle" data-modal="Login">Login</a>
+				</li>
+				<li class='Header__item'>
+					<a href="#" class='Header__link Menu__toggle'>Poulet</a>
+					<div class='Menu Menu--has-arrow'>
+						<ul class="Menu__nav">
+							<li class="Menu__item">
+								<a href="/logout" class="Menu__link">Logout</a>
+							</li>
+							<li class="Menu__item">
+								<a href="/users/poulet" class="Menu__link">Profile</a>
+							</li>
+							<li class="Menu__item">
+								<a href="/settings" class="Menu__link"></a>
+							</li>
+						</ul>
+					</div>
+					<div class="Menu__arrow"></div>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<section class="main">
+		<% if (!locals.user) { %>
+		<div class="Login Modal utils-abs-centered">
+			<div class="Login__header">
+				<h3 class="Login__title">Connexion</h3>
+			</div>
+			<div class="Login__body">
+				<p v-if="error" class="Login__error"></p>
+				<form action="/api/auth/login" method="post" class="Login__form">
+					<input type="text" placeholder="Pseudo" name="username" class="Form__entry Input__text Input__text--rounded">
+					<input type="password" placeholder="Mot de passe" name="password" class="Form__entry Input__text Input__text--rounded">
+					<div class="Form__entry">
+						<a href="#" class="Login__lost">Vous avez perdu votre mot de passe ?</a>
+					</div>
+					<input type="submit" value="Connexion" class="Login__entry Input__submit Input__submit--rounded">
+				</form>
+			</div>
+		</div>
+		<script>
+			$('.Login__form').on('submit', function(e) {
+				e.preventDefault();
+				console.log('Recuperation des credentials depuis le formulaire ...')
+				console.log('Recuperation OK')
+				console.log('Envoi des credentials à la route /api/auth/login')
+			$.ajax({
+				url: '/api/auth/login',
+				data: $(e.currentTarget).serialize(),
+				type: 'POST',
+				success: function(data){
+					console.log('oké')
+				}
+			});
+		})
+	</script>
+	<% } %>
