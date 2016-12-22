@@ -1,4 +1,5 @@
-$(document).ready( () => {
+$(document).ready( function() {
+  Errors.use('#js-errors')
   //MENU TOGGLE
   //Toggle pour les composants de type menu (a refaire de facon plus générique ?)
   $('.Menu__toggle').on('click', function(e) {

@@ -1,3 +1,15 @@
 <% include ./partials/header %>
-
+bjr, tu es nouvo ?????????????????????????
+<script>
+$(window).on('load', function() {
+	console.log('window loaded')
+	console.log($('.Login').length)
+	console.log(window.location.hash)
+	if (window.location.hash == "#login" && $('.Login').length) {
+		$('body').addClass('utils-overlay')
+		$('.Login').addClass('w-active')
+	}
+})
+	console.log()
+</script>
 <% include ./partials/footer %>

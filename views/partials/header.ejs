@@ -5,6 +5,8 @@
 	<title><%= title %></title>
 	<link rel='stylesheet' href='/stylesheets/style.css' />
 	<script src="/javascripts/jquery.js"></script>
+	<script src="/javascripts/errors.js"></script>
+	<script src="https://use.fontawesome.com/ff9422ad62.js"></script>
 </head>
 <body>
 	<header class='Header'>
@@ -13,14 +15,16 @@
 				<li class="Header__item">
 					<a href="/foo" class="Header__link">Test</a>
 				</li>
+				<% if (!locals.user) { %>
 				<li class="Header__item">
 					<a href="/register" class="Header__link">Register</a>
 				</li>
 				<li class="Header__item">
 					<a href="#" class="Header__link Modal__toggle" data-modal="Login">Login</a>
 				</li>
+				<% } else { %>
 				<li class='Header__item'>
-					<a href="#" class='Header__link Menu__toggle'>Poulet</a>
+					<a href="#" class='Header__link Menu__toggle'><%= locals.user.username %></a>
 					<div class='Menu Menu--has-arrow'>
 						<ul class="Menu__nav">
 							<li class="Menu__item">
@@ -36,10 +40,13 @@
 					</div>
 					<div class="Menu__arrow"></div>
 				</li>
+				<% } %>
 			</ul>
 		</nav>
 	</header>
 	<section class="main">
+		<div class="Errors_container" id="js-errors">
+		</div>
 		<% if (!locals.user) { %>
 		<div class="Login Modal utils-abs-centered">
 			<div class="Login__header">
@@ -63,14 +70,19 @@
 				console.log('Recuperation des credentials depuis le formulaire ...')
 				console.log('Recuperation OK')
 				console.log('Envoi des credentials à la route /api/auth/login')
-			$.ajax({
-				url: '/api/auth/login',
-				data: $(e.currentTarget).serialize(),
-				type: 'POST',
-				success: function(data){
-					console.log('oké')
-				}
-			});
-		})
-	</script>
-	<% } %>
+				$.ajax({
+					url: '/api/auth/login',
+					data: $(e.currentTarget).serialize(),
+					type: 'POST',
+					success: function(data) {
+						console.log(data.redirect)
+						if (typeof data.redirect == 'string')
+							window.location = data.redirect
+					},
+					error: function(err) {
+						Errors.add(err.responseJSON.error)
+					}
+				})
+			})
+		</script>
+		<% } %>

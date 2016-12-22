@@ -8,12 +8,6 @@ var session = require('express-session')
 
 var app = express();
 app.set('trust proxy', 1) // trust first proxy
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true }
-}))
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -25,6 +19,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}))
+app.use( (req, res, next) => {
+    res.locals.user = req.session.user || null;
+    console.log(req.session)
+    console.log('user check middleware, user authentified ?' + (res.locals.user != null))
+    next();
+})
 
 app.use('/', require('./routes/index'));
 app.use('/api', require('./routes/api'));
