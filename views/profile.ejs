@@ -33,7 +33,7 @@
 				<div class="Section__body">
 					<% if (locals.profile.interests) { %>
 						<% profile.interests.forEach(function(interest) { %>
-							<div class="Tag" data-value="<% interest %>">
+							<div class="Tag" data-value="<%= interest %>">
 								<span class="Tag__content">
 									<%= interest %>
 								</span>
@@ -60,4 +60,8 @@
 		</div>
 	</div>
 </div>
+<script>
+	var dbInterests = <%- JSON.stringify(profile.interests) %>
+</script>
+<script src='/javascripts/profile.js'></script>
 <% include ./partials/footer %>

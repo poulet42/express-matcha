@@ -29,4 +29,8 @@ router.get('/users/:username', md.isAuth, function(req, res, next) {
 		}
 	})
 });
+
+router.delete('/users/:username/interests', md.isAuth, function(req, res, next) {
+	console.log("Interet appartenant a l'utilisateur courant ? " + req.params.username === req.session.user.username)
+})
 module.exports = router;
