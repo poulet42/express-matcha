@@ -1,12 +1,20 @@
 var express = require('express');
+var fs = require('fs');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
+var https = require('https');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session')
 
 var app = express();
+
+https.createServer({
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+}, app).listen(3001);
+
 app.set('trust proxy', 1) // trust first proxy
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,10 +34,10 @@ app.use(session({
   cookie: { secure: false }
 }))
 app.use( (req, res, next) => {
-    res.locals.user = req.session.user || null;
-    console.log(req.session)
-    console.log('user check middleware, user authentified ?' + (res.locals.user != null))
-    next();
+  res.locals.user = req.session.user || null;
+  console.log(req.session)
+  console.log('user check middleware, user authentified ?' + (res.locals.user != null))
+  next();
 })
 
 app.use('/', require('./routes/index'));

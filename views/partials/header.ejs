@@ -6,7 +6,8 @@
 	<link rel='stylesheet' href='/stylesheets/style.css' />
 	<script src="/javascripts/jquery.js"></script>
 	<script src="/javascripts/errors.js"></script>
-	<script src="https://use.fontawesome.com/ff9422ad62.js"></script>
+	<!-- <script src="https://use.fontawesome.com/ff9422ad62.js"></script> -->
+	<link rel="stylesheet" type="text/css" href="/fontawesome/css/font-awesome.min.css">
 </head>
 <body>
 	<header class='Header'>
@@ -31,7 +32,7 @@
 								<a href="/logout" class="Menu__link">Logout</a>
 							</li>
 							<li class="Menu__item">
-								<a href="/users/poulet" class="Menu__link">Profile</a>
+								<a href="/profile/<%= user.username %>" class="Menu__link">Profile</a>
 							</li>
 							<li class="Menu__item">
 								<a href="/settings" class="Menu__link"></a>

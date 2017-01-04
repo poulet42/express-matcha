@@ -78,3 +78,58 @@
 2016-12-23T15:52:58.232967000 4044.273386s notice: All client connections closed.
 2016-12-23T15:52:58.232974000 4044.273393s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
 2016-12-23T15:52:58.234698000 4044.275118s notice: Storage engine shut down.
+2016-12-27T14:57:04.954955000 40.025241s notice: Recursively removing directory /Users/poulet/Documents/Projects/matcha/rethinkdb_data/tmp
+2016-12-27T14:57:04.958073000 40.028365s notice: Running rethinkdb 2.3.5 (CLANG 8.0.0 (clang-800.0.38))...
+2016-12-27T14:57:04.966907000 40.037193s notice: Running on Darwin 16.1.0 x86_64
+2016-12-27T14:57:04.966958000 40.037243s notice: Loading data from directory /Users/poulet/Documents/Projects/matcha/rethinkdb_data
+2016-12-27T14:57:05.002887000 40.073173s info: Automatically using cache size of 1399 MB
+2016-12-27T14:57:05.003469000 40.073754s notice: Listening for intracluster connections on port 29015
+2016-12-27T14:57:05.025488000 40.095773s notice: Listening for client driver connections on port 28015
+2016-12-27T14:57:05.025740000 40.096025s notice: Listening for administrative HTTP connections on port 8081
+2016-12-27T14:57:05.025746000 40.096031s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2016-12-27T14:57:05.025749000 40.096034s notice: Listening on driver addresses: 127.0.0.1, ::1
+2016-12-27T14:57:05.025751000 40.096036s notice: Listening on http addresses: 127.0.0.1, ::1
+2016-12-27T14:57:05.025884000 40.096169s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2016-12-27T14:57:05.025887000 40.096172s notice: Server ready, "e3r6p16_42_fr_a5f" 2722074e-142d-48db-ac0f-1b8ff90f06ae
+2016-12-27T14:57:06.176735000 41.246981s info: Table f90f4b18-59e0-430c-9591-b421c9f76ba0: Starting a new Raft election for term 5.
+2016-12-27T14:57:06.197748000 41.267993s info: Table f90f4b18-59e0-430c-9591-b421c9f76ba0: This server is Raft leader for term 5. Latest log index is 11.
+2016-12-27T16:10:26.115780000 4441.052356s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: Starting a new Raft election for term 1.
+2016-12-27T16:10:26.115998000 4441.052574s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: Added replica on this server.
+2016-12-27T16:10:26.134986000 4441.071562s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: This server is Raft leader for term 1. Latest log index is 0.
+2017-01-03T14:22:37.178669000 40.044170s notice: Running rethinkdb 2.3.5 (CLANG 8.0.0 (clang-800.0.38))...
+2017-01-03T14:22:37.184937000 40.050434s notice: Running on Darwin 16.1.0 x86_64
+2017-01-03T14:22:37.184979000 40.050475s notice: Loading data from directory /Users/poulet/Documents/Projects/matcha/rethinkdb_data
+2017-01-03T14:22:37.218598000 40.084086s info: Automatically using cache size of 434 MB
+2017-01-03T14:22:37.219280000 40.084769s notice: Listening for intracluster connections on port 29015
+2017-01-03T14:22:37.247334000 40.112822s notice: Listening for client driver connections on port 28015
+2017-01-03T14:22:37.247500000 40.112988s notice: Listening for administrative HTTP connections on port 8081
+2017-01-03T14:22:37.247515000 40.113003s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2017-01-03T14:22:37.247517000 40.113006s notice: Listening on driver addresses: 127.0.0.1, ::1
+2017-01-03T14:22:37.247519000 40.113007s notice: Listening on http addresses: 127.0.0.1, ::1
+2017-01-03T14:22:37.247521000 40.113009s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2017-01-03T14:22:37.247523000 40.113011s notice: Server ready, "e3r6p16_42_fr_a5f" 2722074e-142d-48db-ac0f-1b8ff90f06ae
+2017-01-03T14:22:38.434277000 41.299766s info: Table f90f4b18-59e0-430c-9591-b421c9f76ba0: Starting a new Raft election for term 6.
+2017-01-03T14:22:38.458439000 41.323927s info: Table f90f4b18-59e0-430c-9591-b421c9f76ba0: This server is Raft leader for term 6. Latest log index is 14.
+2017-01-03T14:22:38.575829000 41.441317s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: Starting a new Raft election for term 2.
+2017-01-03T14:22:38.600951000 41.466440s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: This server is Raft leader for term 2. Latest log index is 2.
+2017-01-03T14:29:03.059228000 425.914486s notice: Server got SIGINT from pid 1552, uid 501; shutting down...
+2017-01-03T14:29:03.059498000 425.914755s notice: Shutting down client connections...
+2017-01-03T14:29:03.059848000 425.915105s notice: All client connections closed.
+2017-01-03T14:29:03.059856000 425.915113s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2017-01-03T14:29:03.066338000 425.921596s notice: Storage engine shut down.
+2017-01-03T14:34:39.297146000 40.038313s notice: Running rethinkdb 2.3.5 (CLANG 8.0.0 (clang-800.0.38))...
+2017-01-03T14:34:39.302614000 40.043775s notice: Running on Darwin 16.1.0 x86_64
+2017-01-03T14:34:39.302658000 40.043818s notice: Loading data from directory /Users/poulet/Documents/Projects/matcha/rethinkdb_data
+2017-01-03T14:34:39.335345000 40.076506s info: Automatically using cache size of 330 MB
+2017-01-03T14:34:39.335847000 40.077008s notice: Listening for intracluster connections on port 29015
+2017-01-03T14:34:39.361609000 40.102770s notice: Listening for client driver connections on port 28015
+2017-01-03T14:34:39.361779000 40.102939s notice: Listening for administrative HTTP connections on port 8081
+2017-01-03T14:34:39.361781000 40.102941s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2017-01-03T14:34:39.361783000 40.102943s notice: Listening on driver addresses: 127.0.0.1, ::1
+2017-01-03T14:34:39.361784000 40.102944s notice: Listening on http addresses: 127.0.0.1, ::1
+2017-01-03T14:34:39.361792000 40.102952s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2017-01-03T14:34:39.361795000 40.102955s notice: Server ready, "e3r6p16_42_fr_a5f" 2722074e-142d-48db-ac0f-1b8ff90f06ae
+2017-01-03T14:34:40.859318000 41.600424s info: Table f90f4b18-59e0-430c-9591-b421c9f76ba0: Starting a new Raft election for term 7.
+2017-01-03T14:34:40.883971000 41.625077s info: Table f90f4b18-59e0-430c-9591-b421c9f76ba0: This server is Raft leader for term 7. Latest log index is 17.
+2017-01-03T14:34:41.315381000 42.056486s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: Starting a new Raft election for term 3.
+2017-01-03T14:34:41.340299000 42.081405s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: This server is Raft leader for term 3. Latest log index is 5.

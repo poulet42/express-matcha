@@ -2,8 +2,12 @@ var express = require('express');
 var router = express.Router();
 var rdb = require('../lib/database.js');
 var md = require('../lib/middlewares.js')
+var multer = require('multer')
+var Users = require('../lib/User.js')
+var mkdirp = require('mkdirp')
+var mediaDir = __dirname + '../public/upload/'
 
-router.post('/auth/login', function(req, res, next) {
+router.post('/auth/login', md.isGuest, function(req, res, next) {
 	rdb.findBy('users', 'username', req.body.username)
 	.then( (user) => {
 		user = user[0]
@@ -17,20 +21,110 @@ router.post('/auth/login', function(req, res, next) {
 		}
 	})
 });
-
+router.post('/auth/register', md.isGuest, md.validateRegistration, function(req, res, next) {
+	Users.exists(req.body.username, req.body.email)
+	.then( (user) => {
+		console.log(user)
+		user = user[0]
+		if (user) {
+			res.status(401).json({error: "L'utilisateur existe déjà !"})
+		} else {
+			console.log('enregistrement en db : ')
+			console.log(req.body)
+			Users.register(req.body)
+			.then((dbRes) => {
+				mkdirp(mediaDir + req.body.username, function (err) {
+					if (err) console.error(err)
+					else console.log('Repertoire utilisateur créé')
+				});
+				req.session.user = {id: dbRes.generated_keys[0], username: req.body.username}
+				res.status(200).json(req.session.user)
+			})
+			// rdb.save('users', req.body)
+			// .then((dbRes) => {
+			// 	mkdirp(mediaDir + req.body.username, function (err) {
+			// 		if (err) console.error(err)
+			// 			else console.log('Repertoire utilisateur créé')
+			// 		});
+			// 	req.session.user = {id: dbRes.generated_keys[0], username: req.body.login}
+			// 	res.status(200).json(req.session.user)
+			// })
+		}
+	})
+})
+router.get('/users/', md.isAuth, function(req, res, next) {
+	Users.list()
+	.then( (result) => {
+		console.log(result)
+		res.send(result)
+	})
+})
 router.get('/users/:username', md.isAuth, function(req, res, next) {
-	console.log(req.params.username)
-	res.render('profile')
-	rdb.findBy('users', 'username', req.params.username)
+	Users.findByUsername(req.params.username)
 	.then( (user) => {
 		user = user[0]
 		if (!user) {
 			res.status(404).json({ error: 'User not found' })
 		}
+		res.send(user)
 	})
 });
-
-router.delete('/users/:username/interests', md.isAuth, function(req, res, next) {
-	console.log("Interet appartenant a l'utilisateur courant ? " + req.params.username === req.session.user.username)
+router.get('/users/:username/photos', md.isAuth, function(req, res, next) {
+	Users.getPhotos(req.params.username, function(error, result) {
+		if (!error) {
+			res.status(200).json({result})
+		} else {
+			console.log(error);
+			res.status(401).json({error})
+		}
+	})
 })
+var storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, __dirname + "/../public/upload/" + req.session.user.username)
+	},
+	filename: (req, file, cb) => {
+		cb(null, file.fieldname + '-' + Date.now())
+	}
+})
+var fileFilter = function (req, file, cb) {
+	if (file.mimetype == 'image/png' || file.mimetype == 'image/jpeg' || file.mimetype == 'image/jpg')
+		cb(null, true)
+	else
+		cb(null, false)
+}
+var upload = multer({
+	storage,
+	limits: {fileSize: 1000000, files:1},
+	fileFilter
+}).single('profileImage')
+router.post('/users/:username/photos', md.isAuth, upload, function(req, res, next) {
+	if (req.file) {
+		Users.addPhoto(req.params.username, req.file.filename)
+		res.status(201).send({path: "/upload/" + req.params.username + "/" + req.file.filename})
+	} else {
+		res.status(401).end()
+	}
+})
+router.get('/users/:username/interests', md.isAuth, function(req, res, next) {
+	Users.getInterests()
+	.then( function(result) {
+		res.send(result)
+	})
+})
+router.delete('/users/:username/interests/:interest', md.isAuth, function(req, res, next) {
+	if (req.params.username === req.session.user.username) {
+		Users.removeInterest(req.session.user.id, req.params.interest)
+		.then( function(result) {
+			res.status(200).json({msg: 'Interest deleted', result})
+		}, function (err) {
+			res.status(404).json({error: 'Coulnd\'t delete the interest'})
+		})
+	}
+})
+
+router.post('/users/:username/interests', md.isAuth, function(req, res, next) {
+	console.log('a faire: ajout d\'interets')
+})
+// router.post('/users/:username/interests', )
 module.exports = router;

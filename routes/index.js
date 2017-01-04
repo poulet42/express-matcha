@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var md = require('../lib/middlewares.js')
 var rdb = require('../lib/database.js')
+var Users = require('../lib/User.js')
 router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Matcha - Home' });
 })
@@ -11,13 +12,13 @@ router.get('/profile/:username', md.isAuth, function (req, res, next) {
 		console.log('pas de req params ? redirection vers profil utilisateur courant')
 		return res.redirect('/profile/' +  req.session.user.username)
 	}
-	rdb.findBy('users', 'username', req.params.username)
+	//rdb.findBy('users', 'username', req.params.username)
+	Users.findByUsername(req.params.username)
 	.then( (user) => {
 		user = user[0]
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' })
 		} else {
-			delete user.password
 			console.log(user)
 			res.render('profile', {
 				title: 'Matcha - ' + req.params.username + '\'s Profile', 

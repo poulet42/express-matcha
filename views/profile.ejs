@@ -4,64 +4,110 @@
 	<div class="Profile__infos">
 		<div class="Profile__cover">
 			<div class="Profile__user">
-				<div class="Profile__thumbnail"><a class="Thumbnail__add"></a><img /></div>
-				<div class="Profile__identity">
-					<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span></div>
-					<div class="Profile__others">
-						<div class="Others__entry">
-							<div class="Others__tooltip">Location</div>
-							<div class="Others__icon"><i class="fa fa-map-marker"></i></div>
-							<div class="Others__value"><%= profile.location || "__" %></div>
-						</div>
-						<div class="Others__entry">
-							<div class="Others__tooltip">Popularity</div>
-							<div class="Others__icon"><i class="fa fa-fire"></i></div>
-							<div class="Others__value"><%= profile.popularity || "__" %></div>
-						</div>
-						<div class="Others__entry">
-							<div class="Others__tooltip">Sexual orientation</div>
-							<div class="Others__icon"><i class="fa fa-heart"></i></div>
-							<div class="Others__value"><%= profile.orientation || "__" %></div>
-						</div>
+				<div class="Profile__thumbnail" 
+				<% if (profile.avatar) { %>
+				style="background-image:url('/upload/<%= profile.username + "/" + profile.avatar %>');"
+				<% } %>>
+				<% if (profile.id === user.id) { %>
+				<a class="Thumbnail__add Modal__toggle" data-modal="User__photos"></a>
+				<% } %>
+				<!-- <img src=/> -->
+			</div>
+			<div class="Profile__identity">
+				<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span></div>
+				<div class="Profile__others">
+					<div class="Others__entry">
+						<div class="Others__tooltip">Location</div>
+						<div class="Others__icon"><i class="fa fa-map-marker"></i></div>
+						<div class="Others__value"><%= profile.location || "__" %></div>
+					</div>
+					<div class="Others__entry">
+						<div class="Others__tooltip">Popularity</div>
+						<div class="Others__icon"><i class="fa fa-fire"></i></div>
+						<div class="Others__value"><%= profile.popularity || "__" %></div>
+					</div>
+					<div class="Others__entry">
+						<div class="Others__tooltip">Sexual orientation</div>
+						<div class="Others__icon"><i class="fa fa-heart"></i></div>
+						<div class="Others__value"><%= profile.orientation || "__" %></div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="Profile__misc">
-			<section class="Profile__tags">
-				<h2 class="Section__header">Interests</h2>
-				<div class="Section__body">
-					<% if (locals.profile.interests) { %>
-						<% profile.interests.forEach(function(interest) { %>
-							<div class="Tag" data-value="<%= interest %>">
-								<span class="Tag__content">
-									<%= interest %>
-								</span>
-								<% if (profile.id === user.id) { %>
-									<a href="#" class='Tag__close'><i class="fa fa-close"></i></a>
-								<% } %>
-							</div>
-						<% }) %>
+	</div>
+	<div class='User__photos Modal Modal--default utils-abs-centered'>
+		<form method="post" action="/api/users/poulet/photos" enctype="multipart/form-data">
+			<input type="file" name="profileImage" />
+			<input type="submit" />
+			<div class="Photos__grid" id="js-photos-container">
+			</div>
+		</form>
+	</div>
+	<!-- <div class='User__interests Modal Modal--default utils-abs-centered'>
+		<select class='Interests__dropdown' multiple="multiple" disabled="true">
+			<option value="AL">Alabama</option>
+			<option value="WY">Wyoming</option>
+		</select>
+	</div> -->
+	<div class="Profile__misc">
+		<section class="Profile__tags">
+			<h2 class="Section__header">Interests</h2>
+			<div class="Section__body">
+				<% if (locals.profile.interests) { %>
+				<% profile.interests.forEach(function(interest) { %>
+				<div class="Tag" data-value="<%= interest.label %>" data-id="<%= interest.id %>">
+					<span class="Tag__content">
+						<%= interest.label %>
+					</span>
+					<% if (profile.id === user.id) { %>
+					<a href="#" class='Tag__icon Tag__close'><i class="fa fa-close"></i></a>
 					<% } %>
 				</div>
-			</section>
-			<section class="Profile__about">
-				<h2 class="Section__header">About</h2>
-				<div class="Section__body">
-
-				</div>
-			</section>
-			<section class="Profile__photos">
+				<% }) %>
+				<% } %>
+				<% if (profile.id === user.id) { %>
+				<select class="Tag Tag__dropdown" multiple="multiple">
+					<option value="AL">Alabama</option>
+					<option value="WY">Wyoming</option>
+					<option value="WY">Wyoming</option>
+					<option value="WY">Wyoming</option>
+					<option value="WY">Wyoming</option>
+					<option value="WY">Wyoming</option>
+					<option value="WY">Wyoming</option>
+					
+				</select>
+				<% } %>
+			</div>
+		</section>
+		<section class="Profile__about">
+			<h2 class="Section__header">About</h2>
+			<div class="Section__body">
+				<%= profile.description || "" %>
+			</div>
+		</section>
+<!-- 			<section class="Profile__photos">
 				<h2 class="Section__header">Photos</h2>
 				<div class="Section__body">
-
 				</div>
-			</section>
+			</section> -->
 		</div>
 	</div>
 </div>
 <script>
 	var dbInterests = <%- JSON.stringify(profile.interests) %>
+	var username = <%- JSON.stringify(profile.username) %>
+	var profilePic = <%- JSON.stringify(profile.avatar) %>
 </script>
 <script src='/javascripts/profile.js'></script>
+<link rel="stylesheet" type="text/css" href="/stylesheets/select2.css">
+<script type="text/javascript" src="/javascripts/select2.js"></script>
+<script type="text/javascript">
+	var interestsDd = $('.Tag__dropdown')
+	interestsDd.select2({
+		tags: true,
+		tokenSeparators: [',', ' '],
+		placeholder: "Add new interests",
+		theme: "matcha"
+	})
+</script>
 <% include ./partials/footer %>

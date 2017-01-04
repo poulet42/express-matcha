@@ -19,13 +19,13 @@ $(document).ready( function() {
     var target = $("." + $(this).data('modal'))
     if (target.length) {
       target.addClass('w-active')
+      target.trigger('modalOpen')
     }
   })
-
   //Note : les classes fermables par un clic sur la window sont prefixées par w-
   $(window).on('click', function(e) {
     if (!$(e.target).is('.w-active') && !$(e.target).parents('.w-active').length) {
-      $('.w-active').removeClass('w-active')
+      $('.w-active').removeClass('w-active').trigger('modalClose')
       $('.utils-overlay').removeClass('utils-overlay')
     }
   })
