@@ -20,10 +20,17 @@ router.get('/profile/:username', md.isAuth, function (req, res, next) {
 			return res.status(404).json({ error: 'User not found' })
 		} else {
 			console.log(user)
-			res.render('profile', {
-				title: 'Matcha - ' + req.params.username + '\'s Profile', 
-				profile: user
+			Users.isLiked(req.session.user.username, req.params.username)
+			.then( (bool) => {
+				user['likedStatus'] = bool;
+				// Users.match(req.session.user.username, req.params.username)
+				console.log(user.likedStatus)
+				res.render('profile', {
+					title: 'Matcha - ' + req.params.username + '\'s Profile', 
+					profile: user
+				})
 			})
+
 		}
 	})
 })

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	console.log('username = ' + username)
 	var getPhoto = function(filename) {
 		var itemClass = filename === profilePic ? "Photos__item Photos__item--selected" : "Photos__item"
 		return (" \
@@ -27,9 +28,13 @@ $(document).ready(function() {
 			}
 		})
 	})
-	console.log(dbInterests)
 	var interestsDel = $('.Tag__close')
+	var toggleLike = $('#js-profile-like');
 	var thumbAdd = $('.Thumbnail__add')
+	var editLikeBtn = function(bool) {
+		toggleLike.removeClass('Loading').find('.Btn__text').text(bool === true ? "Dislike" : "Like")
+		toggleLike.find('.Btn__icon i').addClass('fa-heart').removeClass('fa-circle-o-notch fa-spin fa-fw')
+	}
 	interestsDel.on('click', function(e) {
 		e.preventDefault()
 		var tag = $(this).parent('.Tag')
@@ -52,5 +57,22 @@ $(document).ready(function() {
 		} else {
 			console.log(x)
 		}
+	})
+	toggleLike.on('click', function(e) {
+		if (toggleLike.is('Loading'))
+			return ;
+		toggleLike.addClass('Loading').find('.Btn__icon i').removeClass('fa-heart').addClass('fa-circle-o-notch fa-spin fa-fw')
+		e.preventDefault();
+		$.ajax({
+			url: 'https://localhost:3001/api/users/' + username + '/likes',
+			type: 'POST',
+			success: function(data) {
+				likedStatus = data.liked
+				editLikeBtn(likedStatus)
+			},
+			error: function(err) {
+				console.log(err)
+			}
+		})
 	})
 })

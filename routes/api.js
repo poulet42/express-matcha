@@ -79,6 +79,15 @@ router.get('/users/:username/photos', md.isAuth, function(req, res, next) {
 		}
 	})
 })
+router.post('/users/:username/likes', md.isAuth, function(req, res, next) {
+	if (req.session.user.username == req.params.username)
+		return res.status(401).send({error: "You can't like yourself !"})
+	Users.toggleLike(req.session.user.username, req.params.username).then( (result) => {
+		res.status(200).send({
+			liked: result
+		})
+	})
+})
 var storage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, __dirname + "/../public/upload/" + req.session.user.username)

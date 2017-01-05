@@ -3,7 +3,22 @@
 	<div class="Profile__chat"></div>
 	<div class="Profile__infos">
 		<div class="Profile__cover">
-			<div class="Profile__user">
+			<% if (profile.id != user.id) { %>
+			<div class="Profile__actions Sticky" data-offset="20">
+				<a href="#" class="Profile__btn Profile__btn--like Profile__btn--with-icon" id="js-profile-like">
+					<span class='Btn__text'><% if (profile.likedStatus === true) { %>Dislike<% } else { %>Like<% } %></span>
+					<span class='Btn__icon'><i class='fa fa-heart'></i></span>
+				</a>
+				<a href="#" class="Profile__btn Profile__btn--chat Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled">
+					<span class='Btn__text'>Chat</span>
+					<span class='Btn__icon'><i class='fa fa-comment'></i></span>
+					<div class="Tooltip">
+						You can't chat with this user right now
+					</div>
+				</a>
+			</div>
+			<% } %>
+			<div class="Profile__user Profile__user--is-online">
 				<div class="Profile__thumbnail" 
 				<% if (profile.avatar) { %>
 				style="background-image:url('/upload/<%= profile.username + "/" + profile.avatar %>');"
@@ -11,23 +26,22 @@
 				<% if (profile.id === user.id) { %>
 				<a class="Thumbnail__add Modal__toggle" data-modal="User__photos"></a>
 				<% } %>
-				<!-- <img src=/> -->
 			</div>
 			<div class="Profile__identity">
 				<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span></div>
 				<div class="Profile__others">
-					<div class="Others__entry">
-						<div class="Others__tooltip">Location</div>
+					<div class="Others__entry Tooltip__toggle">
+						<div class="Tooltip">Location</div>
 						<div class="Others__icon"><i class="fa fa-map-marker"></i></div>
 						<div class="Others__value"><%= profile.location || "__" %></div>
 					</div>
-					<div class="Others__entry">
-						<div class="Others__tooltip">Popularity</div>
+					<div class="Others__entry Tooltip__toggle">
+						<div class="Tooltip">Popularity</div>
 						<div class="Others__icon"><i class="fa fa-fire"></i></div>
 						<div class="Others__value"><%= profile.popularity || "__" %></div>
 					</div>
-					<div class="Others__entry">
-						<div class="Others__tooltip">Sexual orientation</div>
+					<div class="Others__entry Tooltip__toggle">
+						<div class="Tooltip">Sexual orientation</div>
 						<div class="Others__icon"><i class="fa fa-heart"></i></div>
 						<div class="Others__value"><%= profile.orientation || "__" %></div>
 					</div>
@@ -96,7 +110,11 @@
 <script>
 	var dbInterests = <%- JSON.stringify(profile.interests) %>
 	var username = <%- JSON.stringify(profile.username) %>
+	<% if (profile.likedStatus) { %>
+	var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
+	<% } if (profile.avatar) { %>
 	var profilePic = <%- JSON.stringify(profile.avatar) %>
+	<% } %>
 </script>
 <script src='/javascripts/profile.js'></script>
 <link rel="stylesheet" type="text/css" href="/stylesheets/select2.css">
