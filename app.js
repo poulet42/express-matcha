@@ -9,11 +9,20 @@ var bodyParser = require('body-parser');
 var session = require('express-session')
 
 var app = express();
-
-https.createServer({
+var server = https.createServer({
   key: fs.readFileSync('key.pem'),
   cert: fs.readFileSync('cert.pem')
 }, app).listen(3001);
+//var io = require('socket.io')(server);
+var io = require('./lib/socket.js').listen(server)
+// io.on('connection', (socket) => {
+  // socket.on('test', (data) => {
+  //   console.log('holy shit ca marche')
+  // })
+  // socket.on('notification', (data) => {
+  //   console.log('nouvelle notification ! ', data.notification)
+  // })
+// })
 
 app.set('trust proxy', 1) // trust first proxy
 // view engine setup
@@ -40,8 +49,13 @@ app.use( (req, res, next) => {
   next();
 })
 
+// app.use ( (req, res, next) => {
+//   req.io = io
+//   next()
+// })
+
 app.use('/', require('./routes/index'));
-app.use('/api', require('./routes/api'));
+app.use('/api', require('./routes/api')(io));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -34,7 +34,9 @@ router.get('/profile/:username', md.isAuth, function (req, res, next) {
 		}
 	})
 })
-
+router.get('/dashboard', md.isAuth, (req, res, next) => {
+	
+})
 router.get('/register', md.isGuest, (req, res, next) => {
 	res.render('register', { title: 'Matcha - Register'})
 })

@@ -1,4 +1,6 @@
 <% include ./partials/header %>
+
+<button id="test">SOCKET !</button>
 <div class="Profile">
 	<div class="Profile__chat"></div>
 	<div class="Profile__infos">
@@ -108,7 +110,8 @@
 	</div>
 </div>
 <script>
-	var dbInterests = <%- JSON.stringify(profile.interests) %>
+	var me = <%- JSON.stringify(user.username) -%>;
+	var dbInterests = <%- JSON.stringify(profile.interests) %>;
 	var username = <%- JSON.stringify(profile.username) %>
 	<% if (profile.likedStatus) { %>
 	var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
