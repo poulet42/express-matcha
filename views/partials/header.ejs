@@ -25,8 +25,16 @@
 					<a href="#" class="Header__link Modal__toggle" data-modal="Login">Login</a>
 				</li>
 				<% } else { %>
+				<li class="Header__item">
+					<div class="Menu Menu--has-arrow Notifications">
+						<ul class="Menu__nav Notifications__container">
+							
+						</ul>
+					</div>
+					<div class="Menu__arrow"></div>
+					<a href="#" class="Header__link Header__link--shrinked Menu__toggle"><i class="fa fa-bell"></i></a>
+				</li>
 				<li class='Header__item'>
-					<a href="#" class='Header__link Menu__toggle'><%= locals.user.username %></a>
 					<div class='Menu Menu--has-arrow'>
 						<ul class="Menu__nav">
 							<li class="Menu__item">
@@ -41,6 +49,7 @@
 						</ul>
 					</div>
 					<div class="Menu__arrow"></div>
+					<a href="#" class='Header__link Menu__toggle Menu__toggle--has-arrow'><%= locals.user.username %></a>
 				</li>
 				<% } %>
 			</ul>

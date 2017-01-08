@@ -1,4 +1,24 @@
 		</section>
+		<% if (locals.user) { %>
+		<script src="/javascripts/notifications.js"></script>
+		<script>
+			var socket = io()
+			socket.emit('init', <%- JSON.stringify(user.username) -%>)
+			console.log(username)
+			var notif = new Notification ({
+				source: ['bjr', 'notification #2', 'notification #3'],
+				limit: 5,
+				template: function(message) {
+					return ('<li class="Menu__item"> \
+								<a href="#" class="Menu__link Notification__dismiss">' + message + '</a> \
+							</li>')
+				},
+				beforeDismiss: function(domElement) {
+					console.log('g reussi !!! lol ', domElement)
+				}
+			})
+		</script>
+		<% } %>
 		<script src="/javascripts/main.js"></script>
 	</body>
-</html>
+	</html>

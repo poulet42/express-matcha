@@ -189,6 +189,9 @@ p {
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 200;
 }
+.Header__link--shrinked {
+  min-width: auto;
+}
 
 /**
  *
@@ -303,7 +306,7 @@ p {
   border-left: 5px solid #e4e4e4;
   border-right: 5px solid transparent;
   border-bottom: 5px solid transparent;
-  z-index: 1;
+  z-index: 2;
   background: #fff;
 }
 .Menu__arrow::before {
@@ -323,7 +326,7 @@ p {
 .Menu__toggle {
   text-transform: capitalize;
 }
-.Menu__toggle::after {
+.Menu__toggle--has-arrow::after {
   color: inherit;
   content: '';
   border-top: 5px solid currentColor;
@@ -336,7 +339,7 @@ p {
   transform: translateY(-25%);
   transition: transform 0.3s;
 }
-.w-active.Menu__toggle::after {
+.Menu.w-active ~ .Menu__toggle::after {
   transform: translateY(-75%) rotateZ(180deg);
 }
 
