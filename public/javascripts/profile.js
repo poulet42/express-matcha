@@ -4,7 +4,7 @@ $(document).ready(function() {
 		var itemClass = filename === profilePic ? "Photos__item Photos__item--selected" : "Photos__item"
 		return (" \
 			<div class='" + itemClass + "'> \
-				<img src='/upload/" + username + "/" + filename + "' />\
+			<img src='/upload/" + username + "/" + filename + "' />\
 			</div> \
 			")
 	}
@@ -18,15 +18,15 @@ $(document).ready(function() {
 				var fakeContainer = $('<div></div>')
 				for (var i = data.result.length - 1; i >= 0; i--) {
 				//	populateProfilePics(data.result[i])
-					fakeContainer.append(getPhoto(data.result[i]))
-				}
-				console.log('done', fakeContainer)
-				photosContainer.append(fakeContainer.children())
-			},
-			error: function (err) {
-				console.log(err)
+				fakeContainer.append(getPhoto(data.result[i]))
 			}
-		})
+			console.log('done', fakeContainer)
+			photosContainer.append(fakeContainer.children())
+		},
+		error: function (err) {
+			console.log(err)
+		}
+	})
 	})
 	var interestsDel = $('.Tag__close')
 	var toggleLike = $('#js-profile-like');
@@ -68,7 +68,10 @@ $(document).ready(function() {
 			type: 'POST',
 			success: function(data) {
 				likedStatus = data.liked
+				console.log(data.liked)
 				editLikeBtn(likedStatus)
+				console.log(username)
+				//socket.emit('send notification', {receiver: username, content: (likedStatus ? "a aimé" : "n'aime plus") + " votre profil"})
 			},
 			error: function(err) {
 				console.log(err)

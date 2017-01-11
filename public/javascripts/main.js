@@ -1,5 +1,17 @@
 
 $(document).ready( function() {
+  var notif = new Notification ({
+    source: ['bjr', 'notification #2', 'notification #3'],
+    limit: 5,
+    template: function(notif) {
+      return ('<li class="Menu__item"> \
+        <a href="#" class="Menu__link Notification__dismiss">' + notif.emitter + " " + notif.content + '</a> \
+        </li>')
+    },
+    beforeDismiss: function(domElement) {
+      console.log('g reussi !!! lol ', domElement)
+    }
+  })
   Errors.use('#js-errors')
   //MENU TOGGLE
   //Toggle pour les composants de type menu (a refaire de facon plus générique ?)
@@ -33,12 +45,15 @@ $(document).ready( function() {
       $('.utils-overlay').removeClass('utils-overlay')
     }
   })
+
+  
   if (typeof username !== 'undefined') {
     $('#test').on('click', (e) => {
       var msg = prompt('WUW')
       socket.emit('send notification', {receiver: username, notification: msg})
     })
     socket.on('notification', (notification) => {
+      console.log(notification)
       notif.create(notification)
     })
   } else {

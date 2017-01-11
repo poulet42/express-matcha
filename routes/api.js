@@ -75,8 +75,7 @@ module.exports = function(io) {
 		if (req.session.user.username == req.params.username)
 			return res.status(401).send({error: "You can't like yourself !"})
 		Users.toggleLike(req.session.user.username, req.params.username).then( (result) => {
-			Users.notify(result ? 'like' : 'dislike', req.params.username)
-			.then((notification) => {io.emit('notification', notification)})
+			Users.addNotifications(result ? 'like' : 'dislike', req.session.user.username, req.params.username)
 			res.status(200).send({
 				liked: result
 			})
