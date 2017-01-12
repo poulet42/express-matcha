@@ -22,17 +22,35 @@
 
 	Notification.prototype._init = function() {
 		console.log('Initializing the component')
-		if (this.options.source.length > 0) {
-			console.log('rendering first notifications')
-			for (var i = Math.min(this.options.source.length, this.options.limit) - 1; i >= 0; i--) {
-				this.create(this.options.source[i])
-			}
-		} else {
-			console.log('empty source, waiting for new notifications ...')
+	
+		if (this.options.source.type === "array" && this.options.source.data.length > 0) {
+			console.log('source from array')
+			this.renderPrimarySource(this.options.source.data)
+		} else if (this.options.source.type === "ajax") {
+			var url = this.options.source.data;
+			var _this = this;
+			$.ajax({
+				url: url,
+				type: 'POST',
+				success: function(data) {
+					_this.renderPrimarySource(data)
+				},
+				error: function(err) {
+					console.log("lol nope, your source isn't valid")
+				}
+			}).catch( function() {
+				console.log('oh shieet')
+			})
 		}
 		this._events()
 	}
 
+	Notification.prototype.renderPrimarySource = function(source) {
+			console.log('rendering first notifications')
+			for (var i = Math.min(source.length, this.options.limit) - 1; i >= 0; i--) {
+				this.create(source[i])
+			}
+	}
 	Notification.prototype._events = function() {
 		// var closeBtn = $(this.options.dismissClass),
 		// _this = this
@@ -62,7 +80,7 @@
 	}
 	Notification.prototype.options = {
 		wrapper: $('.Notifications__container'),
-		source: [],
+		source: {data: [], type: "array"},
 		limit: 10,
 		template: function(n) {return '<div>' + n + '</div>'},
 		dismissClass: '.Notification__dismiss',

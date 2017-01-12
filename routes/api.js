@@ -5,19 +5,22 @@ var md = require('../lib/middlewares.js')
 var multer = require('multer')
 var Users = require('../lib/User.js')
 var mkdirp = require('mkdirp')
+var notif = require('../lib/Notification.js')
 var mediaDir = __dirname + '../public/upload/'
 
 module.exports = function(io) {
 	router.post('/auth/login', md.isGuest, function(req, res, next) {
-		rdb.findBy('users', 'username', req.body.username)
+		Users.findByUsername(req.body.username, true)
 		.then( (user) => {
 			user = user[0]
+			console.log(user)
 			if (!user) {
 				res.status(404).json({ error: 'User not found' })
 			} else if (user.password === req.body.password) {
 				req.session.user = {id: user.id, username: user.username}
 				res.status(200).json({redirect: '/profile/' + user.username})
 			} else {
+				console.log("user pass: " + user.password, req.body.password )
 				res.status(401).json({ error: 'Bad credentials' })
 			}
 		})
@@ -75,10 +78,25 @@ module.exports = function(io) {
 		if (req.session.user.username == req.params.username)
 			return res.status(401).send({error: "You can't like yourself !"})
 		Users.toggleLike(req.session.user.username, req.params.username).then( (result) => {
-			Users.addNotifications(result ? 'like' : 'dislike', req.session.user.username, req.params.username)
+			Users.addNotifications({type: result ? 'like' : 'dislike', emitter: req.session.user.username, receiver: req.params.username})
+			.then( (nRes) => {
+				if (io.users[req.params.username])
+					io.users[req.params.username].emit('notification', notif({emitter: req.session.user.username, receiver: req.params.username, type: result ? 'like' : 'dislike', id: nRes.generated_keys[0]}))
+			})
 			res.status(200).send({
 				liked: result
 			})
+		})
+	})
+
+	router.post('/users/:username/notifications', md.isAuth, function(req, res, next) {
+		if (req.session.user.username != req.params.username)
+			return res.status(401).send({error: "You can't access this !"})
+		Users.getNotifications(req.session.user.username).then( (result) => {
+			console.log(result)
+			var niceNotifications = result.map(notif)
+			console.log('notifications: ', niceNotifications, result)
+			res.status(200).send(niceNotifications)
 		})
 	})
 	var storage = multer.diskStorage({

@@ -1,11 +1,15 @@
 
 $(document).ready( function() {
+
+
+
+
   var notif = new Notification ({
-    source: ['bjr', 'notification #2', 'notification #3'],
+    source: {data: 'https://localhost:3001/api/users/' + username + '/notifications', type: 'ajax'},
     limit: 5,
     template: function(notif) {
       return ('<li class="Menu__item"> \
-        <a href="#" class="Menu__link Notification__dismiss">' + notif.emitter + " " + notif.content + '</a> \
+        <a href="#" class="Menu__link Notification__dismiss">' + notif.content + '</a> \
         </li>')
     },
     beforeDismiss: function(domElement) {
@@ -53,7 +57,6 @@ $(document).ready( function() {
       socket.emit('send notification', {receiver: username, notification: msg})
     })
     socket.on('notification', (notification) => {
-      console.log(notification)
       notif.create(notification)
     })
   } else {
