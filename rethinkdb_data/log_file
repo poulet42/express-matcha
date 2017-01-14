@@ -511,3 +511,28 @@
 2017-01-12T20:22:04.705613000 20376.105932s notice: All client connections closed.
 2017-01-12T20:22:04.705628000 20376.105946s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
 2017-01-12T20:22:04.747028000 20376.147346s notice: Storage engine shut down.
+2017-01-14T12:46:22.917812000 0.126241s notice: Running rethinkdb 2.3.5 (CLANG 7.3.0 (clang-703.0.31))...
+2017-01-14T12:46:22.922759000 0.131186s notice: Running on Darwin 15.6.0 x86_64
+2017-01-14T12:46:22.922803000 0.131229s notice: Loading data from directory /Users/cprune/Documents/express/matcha/rethinkdb_data
+2017-01-14T12:46:23.068153000 0.276579s info: Automatically using cache size of 1212 MB
+2017-01-14T12:46:23.068876000 0.277301s notice: Listening for intracluster connections on port 29015
+2017-01-14T12:46:23.236399000 0.444825s notice: Listening for client driver connections on port 28015
+2017-01-14T12:46:23.236496000 0.444922s notice: Listening for administrative HTTP connections on port 8081
+2017-01-14T12:46:23.236499000 0.444924s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2017-01-14T12:46:23.236501000 0.444926s notice: Listening on driver addresses: 127.0.0.1, ::1
+2017-01-14T12:46:23.236655000 0.445081s notice: Listening on http addresses: 127.0.0.1, ::1
+2017-01-14T12:46:23.236657000 0.445083s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2017-01-14T12:46:23.236659000 0.445085s notice: Server ready, "e3r6p16_42_fr_a5f" 2722074e-142d-48db-ac0f-1b8ff90f06ae
+2017-01-14T12:46:24.325090000 1.533616s info: Table c5a5eb8a-8b9a-42f9-9c25-32f37cfe324d: Starting a new Raft election for term 16.
+2017-01-14T12:46:24.362076000 1.570602s info: Table 5e745504-4686-4266-9731-0f094c0938a2: Starting a new Raft election for term 13.
+2017-01-14T12:46:24.381135000 1.589661s info: Table c5a5eb8a-8b9a-42f9-9c25-32f37cfe324d: This server is Raft leader for term 16. Latest log index is 45.
+2017-01-14T12:46:24.429443000 1.637969s info: Table 5e745504-4686-4266-9731-0f094c0938a2: This server is Raft leader for term 13. Latest log index is 36.
+2017-01-14T12:46:24.689600000 1.898125s info: Table f90f4b18-59e0-430c-9591-b421c9f76ba0: Starting a new Raft election for term 25.
+2017-01-14T12:46:24.731808000 1.940334s info: Table f90f4b18-59e0-430c-9591-b421c9f76ba0: This server is Raft leader for term 25. Latest log index is 74.
+2017-01-14T12:46:24.740648000 1.949174s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: Starting a new Raft election for term 21.
+2017-01-14T12:46:24.771469000 1.979995s info: Table a76f78f6-3f86-4136-b6d6-342adc97eca7: This server is Raft leader for term 21. Latest log index is 61.
+2017-01-14T18:08:55.665041000 19353.769207s notice: Server got SIGINT from pid 63170, uid 14528; shutting down...
+2017-01-14T18:08:55.665128000 19353.769294s notice: Shutting down client connections...
+2017-01-14T18:08:55.666045000 19353.770211s notice: All client connections closed.
+2017-01-14T18:08:55.666054000 19353.770220s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2017-01-14T18:08:55.716129000 19353.820347s notice: Storage engine shut down.

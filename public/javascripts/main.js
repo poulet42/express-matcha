@@ -1,21 +1,6 @@
 
 $(document).ready( function() {
 
-
-
-
-  var notif = new Notification ({
-    source: {data: 'https://localhost:3001/api/users/' + username + '/notifications', type: 'ajax'},
-    limit: 5,
-    template: function(notif) {
-      return ('<li class="Menu__item"> \
-        <a href="#" class="Menu__link Notification__dismiss">' + notif.content + '</a> \
-        </li>')
-    },
-    beforeDismiss: function(domElement) {
-      console.log('g reussi !!! lol ', domElement)
-    }
-  })
   Errors.use('#js-errors')
   //MENU TOGGLE
   //Toggle pour les composants de type menu (a refaire de facon plus générique ?)
@@ -52,11 +37,24 @@ $(document).ready( function() {
 
   
   if (typeof username !== 'undefined') {
+    var notif = new Notification ({
+    source: {data: 'https://localhost:3001/api/users/' + username + '/notifications', type: 'ajax'},
+    limit: 5,
+    template: function(notif) {
+      return ('<li class="Menu__item"> \
+        <a href="#" class="Menu__link Notification__dismiss">' + notif.content + '</a> \
+        </li>')
+    },
+    beforeDismiss: function(domElement) {
+      console.log('g reussi !!! lol ', domElement)
+    }
+  })
     $('#test').on('click', (e) => {
       var msg = prompt('WUW')
       socket.emit('send notification', {receiver: username, notification: msg})
     })
     socket.on('notification', (notification) => {
+      console.log('nouvelle notification : ', notification)
       notif.create(notification)
     })
   } else {

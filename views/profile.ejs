@@ -4,6 +4,10 @@
 <div class="Profile">
 	<div class="Profile__chat"></div>
 	<div class="Profile__infos">
+	<%= profile.likedBack + "lol" %>
+	<% if (profile.likedBack == true) { %>
+		cet utilisateur vous aime (SSR)
+	<% } %>
 		<div class="Profile__cover">
 			<% if (profile.id != user.id) { %>
 			<div class="Profile__actions Sticky" data-offset="20">
@@ -90,12 +94,6 @@
 				<select class="Tag Tag__dropdown" multiple="multiple">
 					<option value="AL">Alabama</option>
 					<option value="WY">Wyoming</option>
-					<option value="WY">Wyoming</option>
-					<option value="WY">Wyoming</option>
-					<option value="WY">Wyoming</option>
-					<option value="WY">Wyoming</option>
-					<option value="WY">Wyoming</option>
-					
 				</select>
 				<% } %>
 			</div>
@@ -116,7 +114,9 @@
 </div>
 <script>
 	var dbInterests = <%- JSON.stringify(profile.interests) %>;
+	<% if (profile.username) { %>
 	var username = <%- JSON.stringify(profile.username) %>
+	<% } %>
 	<% if (profile.likedStatus) { %>
 	var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
 	<% } if (profile.avatar) { %>

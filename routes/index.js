@@ -32,6 +32,7 @@ module.exports = function(io) {
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' })
 		} else {
+			Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
 			if (io.users[req.params.username]) {
 				io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
 			}
@@ -39,11 +40,14 @@ module.exports = function(io) {
 			Users.isLiked(req.session.user.username, req.params.username)
 			.then( (bool) => {
 				user['likedStatus'] = bool;
-				// Users.match(req.session.user.username, req.params.username)
-				console.log(user.likedStatus)
-				res.render('profile', {
-					title: 'Matcha - ' + req.params.username + '\'s Profile', 
-					profile: user
+				Users.isLiked(req.params.username, req.session.user.username)
+				.then( (likedBack) => {
+					user['likedBack'] = likedBack
+					console.log(user.likedStatus);
+					res.render('profile', {
+						title: 'Matcha - ' + req.params.username + '\'s Profile', 
+						profile: user
+					})
 				})
 			})
 
