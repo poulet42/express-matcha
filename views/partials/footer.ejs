@@ -4,18 +4,29 @@
 		<script>
 			var socket = io()
 			socket.emit('init', <%- JSON.stringify(user.username) -%>)
-			// var notif = new Notification ({
-			// 	source: ['bjr', 'notification #2', 'notification #3'],
-			// 	limit: 5,
-			// 	template: function(message) {
-			// 		return ('<li class="Menu__item"> \
-			// 					<a href="#" class="Menu__link Notification__dismiss">' + message + '</a> \
-			// 				</li>')
-			// 	},
-			// 	beforeDismiss: function(domElement) {
-			// 		console.log('g reussi !!! lol ', domElement)
-			// 	}
-			// })
+
+			$.ajax({
+				url: 'https://localhost:3001/api/users/' + <%- JSON.stringify(user.username) -%> + '/conversations',
+				type: 'GET',
+				success: function (data) {
+					var fakeChatContainer = $('<div></div>');
+					var chatContainer = $('.Profile__chat');
+					console.log(data);
+					for (var i = data.length - 1; i >= 0; i--) {
+						fakeChatContainer.append(createChatEntry(data[i]))
+					}
+					chatContainer.removeClass('Loading').append(fakeChatContainer.children())
+				}
+			})
+			var createChatEntry = function(data) {
+				return (" \
+					<div class='Chat__Item'>\
+						<a href='#' class='Chat__toggle'>\
+							<span>" + data.users[1 - data.users.indexOf(<%- JSON.stringify(user.username) -%>)] + "</span>\
+						</a>\
+					</div>\
+					")
+			}
 		</script>
 		<% } %>
 		<script src="/javascripts/main.js"></script>

@@ -32,9 +32,11 @@ module.exports = function(io) {
 		if (!user) {
 			return res.status(404).json({ error: 'User not found' })
 		} else {
-			Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
-			if (io.users[req.params.username]) {
-				io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
+			if (req.params.username != req.session.user.username){
+				Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
+				if (io.users[req.params.username]) {
+					io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
+				}
 			}
 			console.log(user)
 			Users.isLiked(req.session.user.username, req.params.username)
@@ -62,6 +64,7 @@ module.exports = function(io) {
 	})
 
 	router.get('/logout', (req, res, next) => {
+		delete io.users[req.session.username];
 		req.session.user = null
 		res.redirect('/#login')
 	})

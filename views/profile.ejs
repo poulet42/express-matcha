@@ -1,13 +1,7 @@
 <% include ./partials/header %>
-
-<button id="test">SOCKET !</button>
 <div class="Profile">
 	<div class="Profile__chat"></div>
 	<div class="Profile__infos">
-	<%= profile.likedBack + "lol" %>
-	<% if (profile.likedBack == true) { %>
-		cet utilisateur vous aime (SSR)
-	<% } %>
 		<div class="Profile__cover">
 			<% if (profile.id != user.id) { %>
 			<div class="Profile__actions Sticky" data-offset="20">

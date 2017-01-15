@@ -57,6 +57,14 @@ $(document).ready( function() {
       console.log('nouvelle notification : ', notification)
       notif.create(notification)
     })
+    socket.on('chatStatus', (chat) => {
+      console.log("vous pouvez desormais chatter ! " + chat.can)
+      if (chat.can == true) {
+        console.log('creation sidebar item');
+        console.log('id: ' + chat.id, 'to : ' + chat.to);
+        $('.Profile__chat').append("<div class='Chat__Item'><a href='" + chat.chatId + "' class='Chat__toggle'><span>" + chat.to + "</span></a></div>")
+      }
+    })
   } else {
     console.log('shieeet')
   }

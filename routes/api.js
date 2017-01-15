@@ -7,7 +7,7 @@ var Users = require('../lib/User.js')
 var mkdirp = require('mkdirp')
 var notif = require('../lib/Notification.js')
 var mediaDir = __dirname + '../public/upload/'
-
+var Chat = require('../lib/Chat.js')
 module.exports = function(io) {
 	router.post('/auth/login', md.isGuest, function(req, res, next) {
 		Users.findByUsername(req.body.username, true)
@@ -76,38 +76,6 @@ module.exports = function(io) {
 	router.post('/users/:username/likes', md.isAuth, function(req, res, next) {
 		if (req.session.user.username == req.params.username)
 			return res.status(401).send({error: "You can't like yourself !"})
-
-
-/*
-		Users.toggleLike(req.session.user.username, req.params.username).then( (result) => {
-			Users.addNotifications({type: result ? 'like' : 'dislike', emitter: req.session.user.username, receiver: req.params.username})
-			.then( (nRes) => {
-				if (io.users[req.params.username]) {
-					io.users[req.params.username].emit('notification', notif({emitter: req.session.user.username, receiver: req.params.username, type: result ? 'like' : 'dislike', id: nRes.generated_keys[0]}))
-					Users.isLiked(req.params.username, req.session.user.username).then( (match) => {
-						if (match && result === true) {
-							Users.createChatroom(req.session.user.username, req.params.username).then( () => {
-								io.users[req.params.username].emit('chatStatus', true)
-								io.users[req.session.user.username].emit('chatStatus', true)
-							})
-							Users.addNotifications({type: 'match', emitter: req.session.user.username, receiver: req.params.username}).then( (nResMatch) => {
-								io.users[req.params.username].emit('notification', notif({emitter: req.session.user.username, receiver: req.params.username, type: 'match', id: nResMatch.generated_keys[0]}))
-							});
-							Users.addNotifications({type: 'match', emitter: req.params.username, receiver: req.session.user.username})
-							.then( (nResMatchTwo) => {
-								if (io.users[req.session.user.username]) {
-									io.users[req.session.user.username].emit('notification', notif({emitter: req.params.username, receiver: req.session.user.username, type: 'match', id: nResMatchTwo.generated_keys[0]}))
-								}
-							});
-						}
-					})
-				}
-
-			})
-			res.status(200).send({
-				liked: result
-			})
-		})*/
 		var currentUser = req.session.user.username;
 		var targetedUser = req.params.username;
 		Users.toggleLike(currentUser, targetedUser)
@@ -119,7 +87,6 @@ module.exports = function(io) {
 				to: targetedUser,
 				type: isLiked ? 'like' : 'dislike'
 			})
-			swaglogger("notification sent from " + currentUser + " to " + targetedUser);
 			return isLiked && Users.isLiked(targetedUser, currentUser) 
 		})
 		.then( (match) => {
@@ -127,13 +94,25 @@ module.exports = function(io) {
 			if (match === true) {
 				sendNotification({from: currentUser, to: targetedUser, type: 'match'});
 				sendNotification({from: targetedUser, to: currentUser, type: 'match'});
-				return Users.createChatroom(currentUser, targetedUser)
+				return Chat.getChatRoomFromUsers([currentUser, targetedUser]).then( (roomId) => {
+					swaglogger("The chat room already exists ?")
+					swaglogger(roomId)
+					if (roomId.length) {
+						swaglogger("Yes, " + roomId[0].id)
+						return roomId[0].id;
+					}
+					else {
+						swaglogger("No, creation of the room")
+						return Chat.createRoom([currentUser, targetedUser]).then( (dbChatRes) => {swaglogger(dbChatRes); return dbChatRes.generated_keys[0]})
+					}
+				})
 			} else {
 				return -1;
 			}
 		})
 		.then ( (chatId) => {
-			sendChatStatus({to: currentUser, from: targetedUser, can: chatId != -1, chatId: chatId})
+			sendChatStatus({to: currentUser, from: targetedUser, can: chatId != -1, chatId: chatId != -1 ? chatId : false})
+			sendChatStatus({from: currentUser, to: targetedUser, can: chatId != -1, chatId: chatId != -1 ? chatId : false})
 		})
 
 	})
@@ -141,14 +120,19 @@ module.exports = function(io) {
 		console.log('\n\n-----\n', txt, '\n-----\n\n')
 	}
 	function sendNotification(args) {
-		Users.addNotifications({emitter: args.from, receiver: args.to, type: args.type})
+		Users.addNotifications({emitter: args.from, receiver: args.to, type: args.type, created: new Date().toLocaleString()})
 		.then( (dbInsertion) => {
-			if (io.users[args.to])
+			if (io.users[args.to]) {
 				io.users[args.to].emit('notification', notif({emitter: args.from, receiver: args.to, type: args.type, id: dbInsertion.generated_keys[0]}))
+				swaglogger("notification sent from " + args.from + " to " + args.to);
+			}
 		})
 	};
 	function sendChatStatus(args) {
 		console.log('sendChatStatus !', args)
+		if (io.users[args.to]) {
+			io.users[args.to].emit('chatStatus', args)
+		}
 	}
 	router.post('/users/:username/notifications', md.isAuth, function(req, res, next) {
 		Users.getNotifications(req.session.user.username).then( (result) => {
@@ -202,6 +186,26 @@ module.exports = function(io) {
 
 	router.post('/users/:username/interests', md.isAuth, function(req, res, next) {
 		console.log('a faire: ajout d\'interets')
+	})
+
+	router.get('/chat/:chatId', md.isAuth, function(req, res, next) {
+		Chat.getData(req.params.chatId)
+		.then( (result) => {
+			if (!result)
+				res.status(404).send({err: "Nope, ce chat n'existe pas"})
+			else if (result.users.indexOf(req.session.user.username) == -1)
+				res.status(401).send({err: "Vous ne participez pas a cette discussion"})
+			else if (result.enabled != true)
+				res.status(401).send({err: "Ce chat n'est plus actif"})
+		})
+	})
+
+	router.get('/users/:username/conversations', md.isAuth, (req, res, next) => {
+		if (req.params.username == req.session.user.username) {
+			Users.getChatRooms(req.params.username).then( (result) => {
+				res.send(result)
+			})
+		}
 	})
 	return router;
 }
