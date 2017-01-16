@@ -13,16 +13,12 @@
 
 	// CONSTRUCTEUR
 	function Notification(options) {
-		console.log("Notification Service started !");
 		this.options = extend( {}, this.options );
 		extend( this.options, options );
-		console.log('default options overwrited');
 		this._init();
 	}
 
 	Notification.prototype._init = function() {
-		console.log('Initializing the component')
-	
 		if (this.options.source.type === "array" && this.options.source.data.length > 0) {
 			console.log('source from array')
 			this.renderPrimarySource(this.options.source.data)
@@ -36,10 +32,8 @@
 					_this.renderPrimarySource(data)
 				},
 				error: function(err) {
-					console.log("lol nope, your source isn't valid")
 				}
 			}).catch( function() {
-				console.log('oh shieet')
 			})
 		}
 		this._events()
@@ -47,7 +41,7 @@
 
 	Notification.prototype.renderPrimarySource = function(source) {
 			console.log('rendering first notifications')
-			for (var i = Math.min(source.length, this.options.limit) - 1; i >= 0; i--) {
+			for (var i = 0, j = Math.min(source.length, this.options.limit) - 1; i <= j; i++) {
 				this.create(source[i])
 			}
 	}
@@ -75,8 +69,7 @@
 		this.options.afterDismiss(notificationDom)
 	}
 	Notification.prototype.create = function(notificationItem) {
-		console.log('creation of ', notificationItem)
-		this.options.wrapper.append($(this.options.template(notificationItem)).addClass('testlol'))	
+		this.options.wrapper.prepend($(this.options.template(notificationItem)).addClass('testlol'))	
 	}
 	Notification.prototype.options = {
 		wrapper: $('.Notifications__container'),

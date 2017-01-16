@@ -1,8 +1,21 @@
 		</section>
 		<% if (locals.user) { %>
+		<div class="Chat__container">
+			<ul class="Messages__wrapper">
+			</ul>
+			<form class="Chat__zone">
+				<input type="hidden" name="username" id="chatHelper__username" value="<%= user.username %>">
+				<input type="hidden" name="chat" value="" id="chatHelper__id">
+				<input type="text" name="content" class="Chat__input">
+				<input type="submit" name="soin">
+			</div>
+		</div>
 		<script src="/javascripts/notifications.js"></script>
 		<script>
 			var socket = io()
+			<% if (locals.user) { %>
+			var me = <%- JSON.stringify(user.username) -%>;
+			<% } %>
 			socket.emit('init', <%- JSON.stringify(user.username) -%>)
 
 			$.ajax({
@@ -11,6 +24,7 @@
 				success: function (data) {
 					var fakeChatContainer = $('<div></div>');
 					var chatContainer = $('.Profile__chat');
+					console.log('ajax chat');
 					console.log(data);
 					for (var i = data.length - 1; i >= 0; i--) {
 						fakeChatContainer.append(createChatEntry(data[i]))
@@ -20,7 +34,7 @@
 			})
 			var createChatEntry = function(data) {
 				return (" \
-					<div class='Chat__Item'>\
+					<div class='Chat__Item' data-chatid='" + data.id + "' data-chatwith='" + data.users[1 - data.users.indexOf(<%- JSON.stringify(user.username) -%>)]+ "'>\
 						<a href='#' class='Chat__toggle'>\
 							<span>" + data.users[1 - data.users.indexOf(<%- JSON.stringify(user.username) -%>)] + "</span>\
 						</a>\

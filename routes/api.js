@@ -98,6 +98,7 @@ module.exports = function(io) {
 					swaglogger("The chat room already exists ?")
 					swaglogger(roomId)
 					if (roomId.length) {
+						Chat.enableRoom([currentUser, targetedUser])
 						swaglogger("Yes, " + roomId[0].id)
 						return roomId[0].id;
 					}
@@ -107,7 +108,9 @@ module.exports = function(io) {
 					}
 				})
 			} else {
-				return -1;
+				console.log('disable room')
+				Chat.disableRoom([currentUser, targetedUser])
+				return -1
 			}
 		})
 		.then ( (chatId) => {
@@ -197,12 +200,40 @@ module.exports = function(io) {
 				res.status(401).send({err: "Vous ne participez pas a cette discussion"})
 			else if (result.enabled != true)
 				res.status(401).send({err: "Ce chat n'est plus actif"})
+			else {
+				res.status(200).send(result);
+			}
 		})
 	})
 
+	router.post('/chat/:chatId/messages', md.isAuth, function(req, res, next) {
+		console.log('Ajout nouveau message !')
+		swaglogger(req.body)
+		Chat.getData(req.params.chatId).then( (chatInfos) => {
+			if (chatInfos != null && chatInfos.enabled === true && chatInfos.users.indexOf(req.body.username) != -1 && req.body.username === req.session.user.username)
+				return chatInfos;
+			else
+				return -1
+		})
+		.then( (chatInstance) => {
+			if (chatInstance != -1) {
+				Chat.addMessage(req.params.chatId, req.body);
+				if (io.users[chatInstance.users[0]])
+					io.users[chatInstance.users[0]].emit('message', req.body)
+				if (io.users[chatInstance.users[1]])
+					io.users[chatInstance.users[1]].emit('message', req.body)
+				console.log(chatInstance)
+				return res.send(req.body)
+			} else {
+				swaglogger('mehh');
+				return res.send({err: "nope, sry"})
+			}
+		}) 
+		
+	})
 	router.get('/users/:username/conversations', md.isAuth, (req, res, next) => {
 		if (req.params.username == req.session.user.username) {
-			Users.getChatRooms(req.params.username).then( (result) => {
+			Users.getChatRooms(req.params.username, {enabledOnly: true}).then( (result) => {
 				res.send(result)
 			})
 		}

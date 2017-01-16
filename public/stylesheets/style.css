@@ -343,6 +343,18 @@ p {
   transform: translateY(-75%) rotateZ(180deg);
 }
 
+
+/**
+ *
+ * Notifications
+ *
+ */
+
+ .Notifications__container {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
 /**
  *
  * Forms
@@ -477,9 +489,10 @@ p {
   flex: 1;
 }
 .Profile__chat {
+  padding: 10px 0;
   width: 100px;
   border-right: 1px solid #e4e4e4;
-  height: 100vh;
+  /*height: 100vh;*/
   transition: width 0.3s;
 }
 .Profile__chat--is-extended {
@@ -527,10 +540,10 @@ p {
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
   -webkit-transition: transform .1s;
-     -moz-transition: transform .1s;
-      -ms-transition: transform .1s;
-       -o-transition: transform .1s;
-          transition: transform .1s;
+  -moz-transition: transform .1s;
+  -ms-transition: transform .1s;
+  -o-transition: transform .1s;
+  transition: transform .1s;
 }
 .Btn__icon i {
   vertical-align: middle;
@@ -554,7 +567,7 @@ p {
   border-color: #f5f5f5;
 }
 .Profile__btn--is-disabled {
-  
+
 }
 .Profile__user {
   display: flex;
@@ -786,6 +799,95 @@ p {
 }
 
 
+/**
+ *
+ * Chat
+ *
+ */
+.Chat__toggle {
+  padding: 10px;
+  display: block;
+  font-size: 12px;
+  position: relative;
+  color: #999;
+}
+.active.Chat__toggle {
+  color: #3399ff;
+}
+.active.Chat__toggle::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 0;
+  bottom: 0;
+  z-index: 9;
+  border-right: 2px solid #3399ff;
+}
+ .Chat__container {
+  background-color: rgba(255,255,255, 0.95);
+  position: fixed;
+  top: 80px;
+  right: 0;
+  left: 100px;
+  bottom: 0;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+.Chat__container--active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.Chat__zone {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+.Chat__input {
+  width: 100%;
+  padding: 20px 10px;
+  display: block;
+  outline-style: none;
+  border: 1px solid #e4e4e4;
+  border-left: none;
+  border-right: none;
+}
+
+.Messages__item {
+  width: 100%;
+  display: block;
+  text-align: left;
+  margin-bottom: 20px; 
+}
+
+.Messages__item--me {
+  float: right;
+  color: #fff;
+  text-align: right;
+}
+.Messages__item--me .Message__content {
+  background-color: #3399ff;
+  color: #fff;
+}
+.Message__from {
+  color: #666;
+  font-size: 12px;
+  display: none;
+}
+.Message__from::after {
+  content: ': ';
+}
+.Message__content{
+  border-radius: 12px;
+  padding: 10px;
+  background-color: #fafafa;
+  color: #999;
+  font-size: 12px;
+}
 /**
  *
  * Profile modal : Interests
