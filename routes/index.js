@@ -10,52 +10,70 @@ module.exports = function(io) {
 	})
 	router.get('/profile/:username', md.isAuth, function (req, res, next) {
 		console.log('route profile  / user')
-		if (req.params.username == "") {
-			console.log('pas de req params ? redirection vers profil utilisateur courant')
-			return res.redirect('/profile/' +  req.session.user.username)
-		}
-	//rdb.findBy('users', 'username', req.params.username)
-	/*console.log('Notification watcher start : ------------------\n\n\n\n\n')
-	Users.watchNotifications(req.session.user.username)
-	.then( (notifications) => {
-		console.log("OKKKKKK ------------------------------\n\n\n\n\n\n")
-		// console.log("Watching : --------------------------------------\n\n\n\n\n", notifications)
-		notifications.next(function(err, curr){
-			if (err) throw err;
-			console.log("VALEUR COURANTE ::::::::::::::\n\n\n\n\n", curr)
-			io.users[curr.new_val.receiver].emit('notification', {content: "test : " + curr.new_val.text, receiver: curr.new_val.receiver, emitter: curr.new_val.emitter})
+		var userData;
+		Users.findByUsername(req.params.username)
+		.then( (userArray) => {
+			return userArray[0]
 		})
-	})*/
-	Users.findByUsername(req.params.username)
-	.then( (user) => {
-		user = user[0]
-		if (!user) {
-			return res.status(404).json({ error: 'User not found' })
-		} else {
-			if (req.params.username != req.session.user.username){
+		.then( (user) => {
+			if (!user) {
+				res.status(404).json({ error: 'User not found' })
+				return next({error: 'User not found'})
+			} else if (req.params.username != req.session.user.username) {
 				Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
 				if (io.users[req.params.username]) {
 					io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
 				}
 			}
-			console.log(user)
-			Users.isLiked(req.session.user.username, req.params.username)
-			.then( (bool) => {
-				user['likedStatus'] = bool;
-				Users.isLiked(req.params.username, req.session.user.username)
-				.then( (likedBack) => {
-					user['likedBack'] = likedBack
-					console.log(user.likedStatus);
-					res.render('profile', {
-						title: 'Matcha - ' + req.params.username + '\'s Profile', 
-						profile: user
-					})
-				})
+			userData = user;
+			return Users.isLiked(req.session.user.username, req.params.username)
+		})
+		.then( (isLiked) => {
+			userData['likedStatus'] = isLiked
+			return Users.isLiked(req.params.username, req.session.user.username)
+		})
+		.then( (likedBack) => {
+			userData['likedBack'] = likedBack
+		})
+		.then ( () => {
+			res.render('profile', {
+				title: 'Matcha - ' + req.params.username + '\'s Profile', 
+				profile: userData
 			})
+		})
 
-		}
+
+		// .then( (user) => {
+		// 	user = user[0]
+		// 	if (!user) {
+		// 		return res.status(404).json({ error: 'User not found' })
+		// 	} else {
+		// 		if (req.params.username != req.session.user.username){
+		// 			Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
+		// 			if (io.users[req.params.username]) {
+		// 				io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
+		// 			}
+		// 		}
+		// 		console.log(user)
+		// 		Users.isLiked(req.session.user.username, req.params.username)
+		// 		.then( (bool) => {
+		// 			user['likedStatus'] = bool;
+		// 			Users.isLiked(req.params.username, req.session.user.username)
+		// 			.then( (likedBack) => {
+		// 				user['likedBack'] = likedBack
+		// 				user['online'] = (typeof io.users[req.params.username] != 'undefined')
+		// 				console.log('ONLINE ? ', user['online'], io.users[req.params.username])
+		// 				console.log(user.likedStatus);
+		// 				res.render('profile', {
+		// 					title: 'Matcha - ' + req.params.username + '\'s Profile', 
+		// 					profile: user
+		// 				})
+		// 			})
+		// 		})
+
+		// 	}
+		// })
 	})
-})
 	router.get('/dashboard', md.isAuth, (req, res, next) => {
 
 	})
@@ -65,7 +83,7 @@ module.exports = function(io) {
 
 	router.get('/logout', (req, res, next) => {
 		delete io.users[req.session.username];
-		req.session.user = null
+		delete req.session.user
 		res.redirect('/#login')
 	})
 

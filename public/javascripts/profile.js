@@ -8,6 +8,22 @@ $(document).ready(function() {
 			</div> \
 			")
 	}
+
+	$('.Tag__edit').on('submit', function(e) {
+		e.preventDefault();
+		addTag($(this).serialize())
+	})
+
+	var addTag = function(fData) {
+		$.ajax({
+			url: 'https://localhost:3001/api/users/' + username + '/interests',
+			type: "POST",
+			data: fData,
+			success: function(result) {
+				console.log(result)
+			}
+		})
+	}
 	$('.User__photos.Modal').one('modalOpen', function() {
 		$.ajax({
 			url: 'https://localhost:3001/api/users/' + username + '/photos/',
@@ -17,16 +33,15 @@ $(document).ready(function() {
 				var photosContainer = $('#js-photos-container')
 				var fakeContainer = $('<div></div>')
 				for (var i = data.result.length - 1; i >= 0; i--) {
-				//	populateProfilePics(data.result[i])
-				fakeContainer.append(getPhoto(data.result[i]))
+					fakeContainer.append(getPhoto(data.result[i]))
+				}
+				console.log('done', fakeContainer)
+				photosContainer.append(fakeContainer.children())
+			},
+			error: function (err) {
+				console.log(err)
 			}
-			console.log('done', fakeContainer)
-			photosContainer.append(fakeContainer.children())
-		},
-		error: function (err) {
-			console.log(err)
-		}
-	})
+		})
 	})
 	var interestsDel = $('.Tag__close')
 	var toggleLike = $('#js-profile-like');

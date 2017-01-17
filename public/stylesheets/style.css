@@ -58,7 +58,20 @@ p {
  * Utils
  *
  */
- .utils-overlay::before {
+
+ .utils-hidden {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+ }
+ .utils-prevent-scroll {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+.utils-overlay::before {
   content: '';
   top: 0;
   left: 0;
@@ -66,7 +79,7 @@ p {
   bottom: 0;
   position: fixed;
   background-color: rgba(22, 22, 22, 0.8);
-  z-index: 3;
+  z-index: 5;
 }
 .utils-clearfix::after {
   content: '';
@@ -126,7 +139,7 @@ p {
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s;
-  z-index: 3;
+  z-index: 6;
 }
 .Modal__content {
   background-color: inherit;
@@ -143,11 +156,15 @@ p {
 
 
  .Header {
-  width: 100%;
   height: 60px;
   line-height: 60px;
   background-color: #fff;
   border-bottom: 1px solid #e4e4e4;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 4;
 }
 .Header__nav {
   float: right;
@@ -216,6 +233,8 @@ p {
 .Error__message {
   font-size: 12px;
 }
+
+
 
 
 
@@ -353,6 +372,23 @@ p {
  .Notifications__container {
   max-height: 200px;
   overflow-y: auto;
+}
+
+
+/**
+ *
+ * Container
+ *
+ */
+
+ .Container {
+  margin-top: 80px;
+  margin-left: 100px;
+  transition: transform 0.3s;
+}
+
+.Container--is-pushed {
+  transform: translateX(100px);
 }
 
 /**
@@ -804,7 +840,7 @@ p {
  * Chat
  *
  */
-.Chat__toggle {
+ .Chat__toggle {
   padding: 10px;
   display: block;
   font-size: 12px;
@@ -823,17 +859,18 @@ p {
   z-index: 9;
   border-right: 2px solid #3399ff;
 }
- .Chat__container {
+.Chat__container {
   background-color: rgba(255,255,255, 0.95);
   position: fixed;
-  top: 80px;
+  top: 60px;
   right: 0;
   left: 100px;
   bottom: 0;
-  padding: 20px;
   opacity: 0;
   visibility: hidden;
   transition: all 0.5s;
+  display: flex;
+  flex-direction: column;
 }
 
 .Chat__container--active {
@@ -842,30 +879,46 @@ p {
 }
 
 .Chat__zone {
-  position: absolute;
+  /*position: absolute;
   bottom: 0;
   right: 0;
-  left: 0;
+  left: 0;*/
+  display: flex;
 }
 .Chat__input {
-  width: 100%;
-  padding: 20px 10px;
+  flex: 1;
+  height: 55px;
+  padding: 20px;
   display: block;
   outline-style: none;
   border: 1px solid #e4e4e4;
   border-left: none;
   border-right: none;
+  color: #666;
 }
-
+.Chat__submit {
+  border: none;
+  padding: 0 30px;
+  background-color: #3399ff;
+  color: #fff;
+  font-family: 'Helvetica Neue';
+  text-transform: uppercase;
+  cursor: pointer;
+  outline-style: none;
+}
+.Messages__wrapper {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
 .Messages__item {
   width: 100%;
   display: block;
   text-align: left;
-  margin-bottom: 20px; 
+  margin-bottom: 10px; 
 }
 
 .Messages__item--me {
-  float: right;
   color: #fff;
   text-align: right;
 }
@@ -887,13 +940,28 @@ p {
   background-color: #fafafa;
   color: #999;
   font-size: 12px;
+  display: inline-block;
 }
 /**
  *
- * Profile modal : Interests
+ * Sidebar
  *
  */
 
+ .Sidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  width: 100px;
+  border-right: 1px solid #e4e4e4;
+  background-color: #fff;
+  z-index: 4;
+}
+
+.Sidebar--is-extended {
+  width: 200px;
+}
 
 /**
  *

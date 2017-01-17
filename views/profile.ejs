@@ -1,132 +1,107 @@
 <% include ./partials/header %>
-<div class="Profile">
-	<div class="Profile__chat"></div>
-	<div class="Profile__infos">
-		<div class="Profile__cover">
-			<% if (profile.id != user.id) { %>
-			<div class="Profile__actions Sticky" data-offset="20">
-				<a href="#" class="Profile__btn Profile__btn--like Profile__btn--with-icon" id="js-profile-like">
-					<span class='Btn__text'><% if (profile.likedStatus === true) { %>Dislike<% } else { %>Like<% } %></span>
-					<span class='Btn__icon'><i class='fa fa-heart'></i></span>
-				</a>
-				<a href="#" class="Profile__btn Profile__btn--chat Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled">
-					<span class='Btn__text'>Chat</span>
-					<span class='Btn__icon'><i class='fa fa-comment'></i></span>
-					<div class="Tooltip">
-						You can't chat with this user right now
-					</div>
-				</a>
-			</div>
-			<% } %>
-			<div class="Profile__user Profile__user--is-online">
-				<div class="Profile__thumbnail" 
-				<% if (profile.avatar) { %>
-				style="background-image:url('/upload/<%= profile.username + "/" + profile.avatar %>');"
-				<% } %>>
-				<% if (profile.id === user.id) { %>
-				<a class="Thumbnail__add Modal__toggle" data-modal="User__photos"></a>
+<section class="Container">
+	<div class="Profile">
+		<div class="Profile__infos">
+			<div class="Profile__cover">
+				<% if (profile.id != user.id) { %>
+				<div class="Profile__actions Sticky" data-offset="20">
+					<a href="#" class="Profile__btn Profile__btn--like Profile__btn--with-icon" id="js-profile-like">
+						<span class='Btn__text'><% if (profile.likedStatus === true) { %>Dislike<% } else { %>Like<% } %></span>
+						<span class='Btn__icon'><i class='fa fa-heart'></i></span>
+					</a>
+					<a href="#" class="Profile__btn Profile__btn--chat Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled">
+						<span class='Btn__text'>Chat</span>
+						<span class='Btn__icon'><i class='fa fa-comment'></i></span>
+						<div class="Tooltip">
+							You can't chat with this user right now
+						</div>
+					</a>
+				</div>
 				<% } %>
-			</div>
-			<div class="Profile__identity">
-				<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span></div>
-				<div class="Profile__others">
-					<div class="Others__entry Tooltip__toggle">
-						<div class="Tooltip">Location</div>
-						<div class="Others__icon"><i class="fa fa-map-marker"></i></div>
-						<div class="Others__value"><%= profile.location || "__" %></div>
-					</div>
-					<div class="Others__entry Tooltip__toggle">
-						<div class="Tooltip">Popularity</div>
-						<div class="Others__icon"><i class="fa fa-fire"></i></div>
-						<div class="Others__value"><%= profile.popularity || "__" %></div>
-					</div>
-					<div class="Others__entry Tooltip__toggle">
-						<div class="Tooltip">Sexual orientation</div>
-						<div class="Others__icon"><i class="fa fa-heart"></i></div>
-						<div class="Others__value"><%= profile.orientation || "__" %></div>
+				<div class="Profile__user">
+					<div class="Profile__thumbnail" 
+					<% if (profile.avatar) { %>
+					style="background-image:url('/upload/<%= profile.username + "/" + profile.avatar %>');"
+					<% } %>>
+					<% if (profile.id === user.id) { %>
+					<a class="Thumbnail__add Modal__toggle" data-modal="User__photos"></a>
+					<% } %>
+				</div>
+				<div class="Profile__identity">
+					<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span></div>
+					<div class="Profile__others">
+						<div class="Others__entry Tooltip__toggle">
+							<div class="Tooltip">Location</div>
+							<div class="Others__icon"><i class="fa fa-map-marker"></i></div>
+							<div class="Others__value"><%= profile.location || "__" %></div>
+						</div>
+						<div class="Others__entry Tooltip__toggle">
+							<div class="Tooltip">Popularity</div>
+							<div class="Others__icon"><i class="fa fa-fire"></i></div>
+							<div class="Others__value"><%= profile.popularity || "__" %></div>
+						</div>
+						<div class="Others__entry Tooltip__toggle">
+							<div class="Tooltip">Sexual orientation</div>
+							<div class="Others__icon"><i class="fa fa-heart"></i></div>
+							<div class="Others__value"><%= profile.orientation || "__" %></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class='User__photos Modal Modal--default utils-abs-centered'>
-		<form method="post" action="/api/users/poulet/photos" enctype="multipart/form-data">
-			<input type="file" name="profileImage" />
-			<input type="submit" />
-			<div class="Photos__grid" id="js-photos-container">
-			</div>
-		</form>
-	</div>
-	<a href="#" class="Modal__toggle " data-modal="ProfileModal">LOLL</a>
-	<div class="Modal ProfileModal Modal--default utils-abs-centered">
-		
-		bjr
-	</div>
-	<!-- <div class='User__interests Modal Modal--default utils-abs-centered'>
-		<select class='Interests__dropdown' multiple="multiple" disabled="true">
-			<option value="AL">Alabama</option>
-			<option value="WY">Wyoming</option>
-		</select>
-	</div> -->
-	<div class="Profile__misc">
-		<section class="Profile__tags">
-			<h2 class="Section__header">Interests</h2>
-			<div class="Section__body">
-				<% if (locals.profile.interests) { %>
-				<% profile.interests.forEach(function(interest) { %>
-				<div class="Tag" data-value="<%= interest.label %>" data-id="<%= interest.id %>">
-					<span class="Tag__content">
-						<%= interest.label %>
-					</span>
+		<div class='User__photos Modal Modal--default utils-abs-centered'>
+			<form method="post" action="/api/users/poulet/photos" enctype="multipart/form-data">
+				<input type="file" name="profileImage" />
+				<input type="submit" />
+				<div class="Photos__grid" id="js-photos-container">
+				</div>
+			</form>
+		</div>
+		<div class="Profile__misc">
+			<section class="Profile__tags">
+				<h2 class="Section__header">Interests</h2>
+				<div class="Section__body">
+					<% if (locals.profile.interests) { %>
+					<% profile.interests.forEach(function(interest) { %>
+					<div class="Tag" data-value="<%= interest.label %>" data-id="<%= interest.id %>">
+						<span class="Tag__content">
+							<%= interest.label %>
+						</span>
+						<% if (profile.id === user.id) { %>
+						<a href="#" class='Tag__icon Tag__close'><i class="fa fa-close"></i></a>
+						<% } %>
+					</div>
+					<% }) %>
+					<% } %>
 					<% if (profile.id === user.id) { %>
-					<a href="#" class='Tag__icon Tag__close'><i class="fa fa-close"></i></a>
+						<form class="Tag__edit">
+							<input type="text" class='Tag__input' name="tag" />
+							<input type="submit" class="utils-hidden" name="tagadd">
+						</form>
 					<% } %>
 				</div>
-				<% }) %>
-				<% } %>
-				<% if (profile.id === user.id) { %>
-				<select class="Tag Tag__dropdown" multiple="multiple">
-					<option value="AL">Alabama</option>
-					<option value="WY">Wyoming</option>
-				</select>
-				<% } %>
-			</div>
-		</section>
-		<section class="Profile__about">
-			<h2 class="Section__header">About</h2>
-			<div class="Section__body">
-				<%= profile.description || "" %>
-			</div>
-		</section>
-<!-- 			<section class="Profile__photos">
-				<h2 class="Section__header">Photos</h2>
+			</section>
+			<section class="Profile__about">
+				<h2 class="Section__header">About</h2>
 				<div class="Section__body">
+					<%= profile.description || "" %>
 				</div>
-			</section> -->
+			</section>
 		</div>
 	</div>
 </div>
+</section>
+<% include ./partials/sidebar %>
 <script>
 	var dbInterests = <%- JSON.stringify(profile.interests) %>;
 	<% if (profile.username) { %>
-	var username = <%- JSON.stringify(profile.username) %>
-	<% } %>
-	<% if (profile.likedStatus) { %>
-	var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
-	<% } if (profile.avatar) { %>
-	var profilePic = <%- JSON.stringify(profile.avatar) %>
-	<% } %>
-</script>
-<script src='/javascripts/profile.js'></script>
-<link rel="stylesheet" type="text/css" href="/stylesheets/select2.css">
-<script type="text/javascript" src="/javascripts/select2.js"></script>
-<script type="text/javascript">
-	var interestsDd = $('.Tag__dropdown')
-	interestsDd.select2({
-		tags: true,
-		tokenSeparators: [',', ' '],
-		placeholder: "Add new interests",
-		theme: "matcha"
-	})
-</script>
-<% include ./partials/footer %>
+		var username = <%- JSON.stringify(profile.username) %>
+		<% } %>
+		<% if (profile.likedStatus) { %>
+			var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
+			<% } if (profile.avatar) { %>
+				var profilePic = <%- JSON.stringify(profile.avatar) %>
+				<% } %>
+			</script>
+			<script src='/javascripts/profile.js'></script>
+			<% include ./partials/footer %>

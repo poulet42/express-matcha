@@ -1,0 +1,29 @@
+<div class="Sidebar">
+	<div class="User__matches">
+	</div>
+</div>
+<script type="text/javascript">
+
+	var createChatEntry = function(data) {
+		return (" \
+			<div class='Match__Item' data-chatid='" + data.id + "' data-chatwith='" + data.users[1 - data.users.indexOf(<%- JSON.stringify(user.username) -%>)]+ "'>\
+				<a href='#' class='Chat__toggle'>\
+					<span>" + data.users[1 - data.users.indexOf(<%- JSON.stringify(user.username) -%>)] + "</span>\
+				</a>\
+			</div>")
+	}
+
+	$.ajax({
+		url: 'https://localhost:3001/api/users/' + <%- JSON.stringify(user.username) -%> + '/conversations',
+		type: 'GET',
+		success: function (data) {
+			var fakeChatContainer = $('<div></div>');
+			var chatContainer = $('.User__matches');
+			for (var i = data.length - 1; i >= 0; i--) {
+				fakeChatContainer.append(createChatEntry(data[i]))
+			}
+			chatContainer.removeClass('Loading').append(fakeChatContainer.children())
+		}
+	})
+</script>
+<script type="text/javascript" src="/javascripts/sidebar.js"></script>

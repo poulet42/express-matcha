@@ -8,6 +8,7 @@ var mkdirp = require('mkdirp')
 var notif = require('../lib/Notification.js')
 var mediaDir = __dirname + '../public/upload/'
 var Chat = require('../lib/Chat.js')
+var Interests = require('../lib/Interests.js')
 module.exports = function(io) {
 	router.post('/auth/login', md.isGuest, function(req, res, next) {
 		Users.findByUsername(req.body.username, true)
@@ -188,8 +189,42 @@ module.exports = function(io) {
 	})
 
 	router.post('/users/:username/interests', md.isAuth, function(req, res, next) {
-		console.log('a faire: ajout d\'interets')
+		console.log('k')
+		Interests.getByName(escapeHtml(req.body.tag))
+		.then((tag) => {
+			console.log(tag)
+			if (!tag.length) {
+				swaglogger('tag doesnt exist')
+				return Interests.add(escapeHtml(req.body.tag)).then( (created) => {return created.generated_keys[0]})
+			}
+			else {
+				swaglogger('tag exists')
+				return tag[0].id
+			}
+		})
+		.then( (id) => {
+			console.log(id)
+			Users.hasInterest(req.session.user.id, id).then( (result) => {
+				console.log(result)
+				if (!result) {
+					Users.addInterest(req.session.user.id, id)
+					res.send({id: id, content: escapeHtml(req.body.tag)})
+				} else {
+					res.send({err: 'already there'})
+				}
+			})
+		})
 	})
+	var escapeHtml = function(text) {
+		var map = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&#34;',
+			"'": '&#39;'
+		};
+		return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+	}
 
 	router.get('/chat/:chatId', md.isAuth, function(req, res, next) {
 		Chat.getData(req.params.chatId)
@@ -217,11 +252,13 @@ module.exports = function(io) {
 		})
 		.then( (chatInstance) => {
 			if (chatInstance != -1) {
-				Chat.addMessage(req.params.chatId, req.body);
+				swaglogger(req.body)
+				var safeMessage = {username: req.body.username, content: escapeHtml(req.body.content), chat: req.body.chat}
+				Chat.addMessage(req.params.chatId, safeMessage);
 				if (io.users[chatInstance.users[0]])
-					io.users[chatInstance.users[0]].emit('message', req.body)
+					io.users[chatInstance.users[0]].emit('message', safeMessage)
 				if (io.users[chatInstance.users[1]])
-					io.users[chatInstance.users[1]].emit('message', req.body)
+					io.users[chatInstance.users[1]].emit('message', safeMessage)
 				console.log(chatInstance)
 				return res.send(req.body)
 			} else {
@@ -229,7 +266,7 @@ module.exports = function(io) {
 				return res.send({err: "nope, sry"})
 			}
 		}) 
-		
+
 	})
 	router.get('/users/:username/conversations', md.isAuth, (req, res, next) => {
 		if (req.params.username == req.session.user.username) {
