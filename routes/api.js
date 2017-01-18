@@ -6,7 +6,7 @@ var multer = require('multer')
 var Users = require('../lib/User.js')
 var mkdirp = require('mkdirp')
 var notif = require('../lib/Notification.js')
-var mediaDir = __dirname + '../public/upload/'
+var mediaDir = __dirname + '/../public/upload/'
 var Chat = require('../lib/Chat.js')
 var Interests = require('../lib/Interests.js')
 module.exports = function(io) {
@@ -189,7 +189,7 @@ module.exports = function(io) {
 	})
 
 	router.post('/users/:username/interests', md.isAuth, function(req, res, next) {
-		console.log('k')
+		if (req.body.tag == "") return res.send({err: "Nope, empty tag"})
 		Interests.getByName(escapeHtml(req.body.tag))
 		.then((tag) => {
 			console.log(tag)

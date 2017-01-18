@@ -1,4 +1,11 @@
 $(document).ready(function() {
+	$('.Tag__input').on('input', function(){ 
+		console.log('k')
+		var size = parseInt($(this).attr('size')); 
+		var chars = $(this).val().length + 1;
+
+		$(this).attr('size', Math.max(chars, 14)); 
+	}); 
 	console.log('username = ' + username)
 	var getPhoto = function(filename) {
 		var itemClass = filename === profilePic ? "Photos__item Photos__item--selected" : "Photos__item"
@@ -12,6 +19,8 @@ $(document).ready(function() {
 	$('.Tag__edit').on('submit', function(e) {
 		e.preventDefault();
 		addTag($(this).serialize())
+		$(this).find('.Tag__input').val("").attr('size', "14")
+		loading($('.Profile__tags'), true)
 	})
 
 	var addTag = function(fData) {
@@ -20,10 +29,35 @@ $(document).ready(function() {
 			type: "POST",
 			data: fData,
 			success: function(result) {
-				console.log(result)
+				if (!result.err)
+					displayTag(result)
+				loading($('.Profile__tags'), false)
 			}
 		})
 	}
+
+	var loading = function(elem, mode) {
+		if (mode == true) {
+			elem.append( function(){
+				return ("<div class='Profile__loading'><i class='fa fa-circle-o-notch fa-spin fa-3x fa-fw'></i></div>")	
+			})
+		}
+		else {
+			elem.find('.Profile__loading').remove()
+		}
+	}
+	var displayTag = function(data) {
+		$('.Tag__edit').before(function() {
+			dbInterests.push({label:data.content, id: data.id})
+			return (" \
+				<div class='Tag' data-value='" + data.content + "' data-id='" + data.id + "'> \
+				<span class='Tag__content'>" + data.content + "</span> \
+				<a href='#' class='Tag__icon Tag__close'><i class='fa fa-close'></i></a> \
+				</div> \
+				")
+		})
+	}
+
 	$('.User__photos.Modal').one('modalOpen', function() {
 		$.ajax({
 			url: 'https://localhost:3001/api/users/' + username + '/photos/',
@@ -50,10 +84,11 @@ $(document).ready(function() {
 		toggleLike.removeClass('Loading').find('.Btn__text').text(bool === true ? "Dislike" : "Like")
 		toggleLike.find('.Btn__icon i').addClass('fa-heart').removeClass('fa-circle-o-notch fa-spin fa-fw')
 	}
-	interestsDel.on('click', function(e) {
+	$('.Tags__container').on('click', '.Tag__close', function(e) {
 		e.preventDefault()
 		var tag = $(this).parent('.Tag')
 		var value = tag.data('id')
+		$(this).find('i').removeClass('fa-close').addClass('fa fa-circle-o-notch fa-spin fa-fw')
 		var x = $.grep(dbInterests, function(obj) {return obj.id == value})
 		if (x.length > 0) {
 			$.ajax({

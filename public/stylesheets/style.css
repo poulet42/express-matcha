@@ -63,8 +63,8 @@ p {
   visibility: hidden;
   opacity: 0;
   position: absolute;
- }
- .utils-prevent-scroll {
+}
+.utils-prevent-scroll {
   position: fixed;
   top: 0;
   left: 0;
@@ -382,7 +382,7 @@ p {
  */
 
  .Container {
-  margin-top: 80px;
+  margin-top: 60px;
   margin-left: 100px;
   transition: transform 0.3s;
 }
@@ -602,11 +602,16 @@ p {
   color: #999;
   border-color: #f5f5f5;
 }
-.Profile__btn--is-disabled {
-
-}
 .Profile__user {
   display: flex;
+}
+
+.Settings__toggle {
+  position: absolute;
+  right: 40px;
+  top: 40px;
+  font-size: 18px;
+  color: #999;
 }
 /* TEST */
 .Profile__user--is-online::after {
@@ -727,14 +732,29 @@ p {
     border-top: 1px solid #e4e4e4;
     margin: 0 80px;
   }
+  .Profile__loading {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #e4e4e4;
+  }
 
   .Section__header {
     font-size: 28px;
     color: #666;
     margin: 40px
   }
-
+  .Profile__section {
+    position: relative;
+  }
   .Section__body {
+    position: relative;
     border-radius: 4px;
     padding: 20px 40px;
   }
@@ -758,6 +778,10 @@ p {
   margin-bottom: 10px;
   font-size: 12px;
 }
+.Tags__container {
+  display: inline-block;
+  max-width: 600px;
+}
 .Tag__dropdown {
   width: 300px;
   background-color: #ffffff;
@@ -772,9 +796,35 @@ p {
 }
 .Tag__icon {
   font-size: 10px;
+  color: inherit;
 }
 
+.Tag__edit {
+  display: inline-block;
+  position: relative;
+  color: #afafaf;
+}
 
+.Tag__input {
+  cursor: pointer;
+  border: none;
+  display: block;
+  color: #afafaf;
+  outline-style: none;
+  transition: all 0.2s;
+  min-width: 110px;
+  border: 1px solid transparent;
+}
+
+.Tag__input:focus {
+  background-color: #fff;
+  border-color: #f5f5f5;
+}
+.Tag__add {
+  position: absolute;
+  right: 18px;
+  top: 11px;
+}
 /**
  *
  * Profile modal : Photos
@@ -981,3 +1031,64 @@ p {
  * Loader
  *
  */
+
+ /**
+  *
+  * Settings Modal
+  *
+  */
+  .Settings__title {
+    font-family: 'Helvetica Neue', sans-serif;
+    color: #666;
+    font-size: 24px;
+    margin: 40px 20px;
+  }
+
+  .Settings__container {
+    padding: 40px 20px;
+  }
+  .Settings__entry {
+    position: relative;
+  }
+  .Settings__label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #999;
+    padding: 20px 0;
+    border-bottom: 1px solid #e4e4e4;
+  }
+  .Settings__label:after {
+    font-family: 'fontawesome';
+    content: '\f078';
+    position: absolute;
+    right: 0;
+    transition: transform 0.2s;
+  }
+  .Settings__body {
+    background-color: #fafafa; 
+    padding: 20px;
+    display: none;
+  }
+  .Settings__entry.is-opened .Settings__body {
+    display: block;
+  }
+  .Settings__entry.is-opened .Settings__label {
+    border-bottom-color: transparent;
+  }
+  .Settings__entry.is-opened .Settings__label::after {
+    transform: rotateZ(180deg);
+  }
+  .Settings__input {
+    padding: 8px 12px;
+    border: 1px solid #e4e4e4;
+    outline-style: none;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .Settings__button {
+    display: inline-block;
+    padding: 8px 10px;
+    color: #fff;
+    border: none; 
+  }
+  

@@ -48,6 +48,13 @@
 					</div>
 				</div>
 			</div>
+			<% if (profile.id === user.id) { %>
+			<a href="#" class="Modal__toggle Settings__toggle" data-modal="Settings__Modal">
+				<i class="fa fa-cog"></i>
+			</a>
+			<% include ./partials/settings %>
+			<% } %>
+
 		</div>
 		<div class='User__photos Modal Modal--default utils-abs-centered'>
 			<form method="post" action="/api/users/poulet/photos" enctype="multipart/form-data">
@@ -58,30 +65,33 @@
 			</form>
 		</div>
 		<div class="Profile__misc">
-			<section class="Profile__tags">
+			<section class="Profile__section Profile__tags">
 				<h2 class="Section__header">Interests</h2>
 				<div class="Section__body">
 					<% if (locals.profile.interests) { %>
-					<% profile.interests.forEach(function(interest) { %>
-					<div class="Tag" data-value="<%= interest.label %>" data-id="<%= interest.id %>">
-						<span class="Tag__content">
-							<%= interest.label %>
-						</span>
+					<div class="Tags__container">
+						<% profile.interests.forEach(function(interest) { %>
+						<div class="Tag" data-value="<%= interest.label %>" data-id="<%= interest.id %>">
+							<span class="Tag__content">
+								<%= interest.label %>
+							</span>
+							<% if (profile.id === user.id) { %>
+							<a href="#" class='Tag__icon Tag__close'><i class="fa fa-close"></i></a>
+							<% } %>
+						</div>
+						<% }) %>
 						<% if (profile.id === user.id) { %>
-						<a href="#" class='Tag__icon Tag__close'><i class="fa fa-close"></i></a>
+						<form class="Tag__edit">
+							<input type="text" class='Tag__input Tag' name="tag" size="14" placeholder="Ajoutez un tag"/>
+							<label for="tagadd" href="#" class='Tag__icon Tag__add'><i class="fa fa-plus"></i></label>
+							<input type="submit" class="utils-hidden" id="tagadd" name="tagadd">
+						</form>
 						<% } %>
 					</div>
-					<% }) %>
-					<% } %>
-					<% if (profile.id === user.id) { %>
-						<form class="Tag__edit">
-							<input type="text" class='Tag__input' name="tag" />
-							<input type="submit" class="utils-hidden" name="tagadd">
-						</form>
 					<% } %>
 				</div>
 			</section>
-			<section class="Profile__about">
+			<section class="Profile__section Profile__about">
 				<h2 class="Section__header">About</h2>
 				<div class="Section__body">
 					<%= profile.description || "" %>
@@ -95,13 +105,13 @@
 <script>
 	var dbInterests = <%- JSON.stringify(profile.interests) %>;
 	<% if (profile.username) { %>
-		var username = <%- JSON.stringify(profile.username) %>
-		<% } %>
-		<% if (profile.likedStatus) { %>
-			var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
-			<% } if (profile.avatar) { %>
-				var profilePic = <%- JSON.stringify(profile.avatar) %>
-				<% } %>
-			</script>
-			<script src='/javascripts/profile.js'></script>
-			<% include ./partials/footer %>
+		var username = <%- JSON.stringify(profile.username) %>;
+	<% } %>
+	<% if (profile.likedStatus) { %>
+		var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
+	<% } if (profile.avatar) { %>
+		var profilePic = <%- JSON.stringify(profile.avatar) %>;
+	<% } %>
+</script>
+<script src='/javascripts/profile.js'></script>
+<% include ./partials/footer %>

@@ -77,6 +77,9 @@ module.exports = function(io) {
 	router.get('/dashboard', md.isAuth, (req, res, next) => {
 
 	})
+	// router.get('/settings', md.isAuth, (req, res, next) => {
+	// 	res.render('settings', {title: 'Matcha - Settings'})
+	// })
 	router.get('/register', md.isGuest, (req, res, next) => {
 		res.render('register', { title: 'Matcha - Register'})
 	})

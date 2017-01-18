@@ -7,7 +7,7 @@
 	<script src="/javascripts/jquery.js"></script>
 	<script src="/javascripts/errors.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
-	<!-- <script src="https://use.fontawesome.com/ff9422ad62.js"></script> -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/geolocator/2.1.0/geolocator.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/fontawesome/css/font-awesome.min.css">
 </head>
 <body>
@@ -32,16 +32,19 @@
 						</ul>
 					</div>
 					<div class="Menu__arrow"></div>
-					<a href="#" class="Header__link Header__link--shrinked Menu__toggle"><i class="fa fa-bell"></i></a>
+					<a href="#" class="Header__link Header__link--shrinked Menu__toggle js-prevent"><i class="fa fa-bell"></i></a>
 				</li>
 				<li class='Header__item'>
 					<div class='Menu Menu--has-arrow'>
 						<ul class="Menu__nav">
 							<li class="Menu__item">
-								<a href="/logout" class="Menu__link">Logout</a>
+								<a href="/profile/<%= user.username %>" class="Menu__link">Profile</a>
 							</li>
 							<li class="Menu__item">
-								<a href="/profile/<%= user.username %>" class="Menu__link">Profile</a>
+								<a href="/settings" class="Menu__link">Settings</a>
+							</li>
+							<li class="Menu__item">
+								<a href="/logout" class="Menu__link">Logout</a>
 							</li>
 							<li class="Menu__item">
 								<a href="/settings" class="Menu__link"></a>
