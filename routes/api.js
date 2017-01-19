@@ -65,6 +65,8 @@ module.exports = function(io) {
 		})
 	});
 	router.get('/users/:username/photos', md.isAuth, function(req, res, next) {
+		if (req.params.username == "me")
+			req.params.username = req.session.user.username
 		Users.getPhotos(req.params.username, function(error, result) {
 			if (!error) {
 				res.status(200).json({result})
@@ -164,12 +166,41 @@ module.exports = function(io) {
 		fileFilter
 	}).single('profileImage')
 	router.post('/users/:username/photos', md.isAuth, upload, function(req, res, next) {
-		if (req.file) {
-			Users.addPhoto(req.params.username, req.file.filename)
-			res.status(201).send({path: "/upload/" + req.params.username + "/" + req.file.filename})
-		} else {
-			res.status(401).end()
+		if (req.params.username == "me")
+			req.params.username = req.session.user.username
+		if (!req.file || req.session.user.username !== req.params.username) {
+			return res.status(401).send({err: "nope"})
 		}
+		Users.getPhotos(req.params.username, (error, result) => {
+			var can = (result.length <= 5)
+			if (can) {
+				Users.addPhoto(req.params.username, req.file.filename)
+				res.status(201).send({path: "/upload/" + req.params.username + "/" + req.file.filename})
+			}
+			else 
+				return res.status(401).send({err: "You can't upload more than 5 files"})
+		})
+	})
+	router.delete('/users/:username/photos/:imageid', md.isAuth, upload, function(req, res, next) {
+		if (req.params.username == "me")
+			req.params.username = req.session.user.username
+		if (req.session.user.username !== req.params.username) {
+			return res.status(401).send({err: "nope"})
+		}
+		Users.getAvatar(req.params.username)
+		.then( (result) => {
+			if (result == req.params.imageid)
+				Users.deleteAvatar(req.params.username)
+		})
+		Users.getPhotos(req.params.username, (error, result) => {
+			if (result.indexOf(req.params.imageid) != -1) {
+				return Users.deletePhoto(req.params.username, req.params.imageid, (err, result) => {
+					if (err) return res.status(401).send({error: err})
+					else res.status(200).send({ok: true, deleted: req.params.imageid})			
+				})
+			}
+		})
+		
 	})
 	router.get('/users/:username/interests', md.isAuth, function(req, res, next) {
 		Users.getInterests()
@@ -190,7 +221,7 @@ module.exports = function(io) {
 
 	router.post('/users/:username/interests', md.isAuth, function(req, res, next) {
 		if (req.body.tag == "") return res.send({err: "Nope, empty tag"})
-		Interests.getByName(escapeHtml(req.body.tag))
+			Interests.getByName(escapeHtml(req.body.tag))
 		.then((tag) => {
 			console.log(tag)
 			if (!tag.length) {
@@ -272,6 +303,19 @@ module.exports = function(io) {
 		if (req.params.username == req.session.user.username) {
 			Users.getChatRooms(req.params.username, {enabledOnly: true}).then( (result) => {
 				res.send(result)
+			})
+		}
+	})
+
+	router.post('/users/:username/location', md.isAuth, (req, res, next) => {
+		if (req.params.username == "me") {
+			req.params.username = req.session.user.username
+		}
+		swaglogger(req.body.location)
+		if (req.params.username == req.session.user.username) {
+			Users.setLocation(req.session.user.id, req.body.location)
+			.then( (result) => {
+				return res.send({location: req.body.location})
 			})
 		}
 	})

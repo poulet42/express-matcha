@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	var photoList = [];
 	$('.Tag__input').on('input', function(){ 
 		console.log('k')
 		var size = parseInt($(this).attr('size')); 
@@ -7,14 +8,6 @@ $(document).ready(function() {
 		$(this).attr('size', Math.max(chars, 14)); 
 	}); 
 	console.log('username = ' + username)
-	var getPhoto = function(filename) {
-		var itemClass = filename === profilePic ? "Photos__item Photos__item--selected" : "Photos__item"
-		return (" \
-			<div class='" + itemClass + "'> \
-			<img src='/upload/" + username + "/" + filename + "' />\
-			</div> \
-			")
-	}
 
 	$('.Tag__edit').on('submit', function(e) {
 		e.preventDefault();
@@ -57,26 +50,7 @@ $(document).ready(function() {
 				")
 		})
 	}
-
-	$('.User__photos.Modal').one('modalOpen', function() {
-		$.ajax({
-			url: 'https://localhost:3001/api/users/' + username + '/photos/',
-			type: 'GET',
-			success: function (data) {
-				console.log(data.result)
-				var photosContainer = $('#js-photos-container')
-				var fakeContainer = $('<div></div>')
-				for (var i = data.result.length - 1; i >= 0; i--) {
-					fakeContainer.append(getPhoto(data.result[i]))
-				}
-				console.log('done', fakeContainer)
-				photosContainer.append(fakeContainer.children())
-			},
-			error: function (err) {
-				console.log(err)
-			}
-		})
-	})
+	
 	var interestsDel = $('.Tag__close')
 	var toggleLike = $('#js-profile-like');
 	var thumbAdd = $('.Thumbnail__add')

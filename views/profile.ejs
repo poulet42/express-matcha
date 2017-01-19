@@ -1,6 +1,9 @@
 <% include ./partials/header %>
 <section class="Container">
 	<div class="Profile">
+	<% if (profile.id == user.id) { %>
+	<% include ./partials/settings %>
+	<% } %>
 		<div class="Profile__infos">
 			<div class="Profile__cover">
 				<% if (profile.id != user.id) { %>
@@ -24,7 +27,7 @@
 					style="background-image:url('/upload/<%= profile.username + "/" + profile.avatar %>');"
 					<% } %>>
 					<% if (profile.id === user.id) { %>
-					<a class="Thumbnail__add Modal__toggle" data-modal="User__photos"></a>
+					<a class="Thumbnail__add Modal__toggle" href="#photos" data-modal="Settings__Modal"></a>
 					<% } %>
 				</div>
 				<div class="Profile__identity">
@@ -33,7 +36,13 @@
 						<div class="Others__entry Tooltip__toggle">
 							<div class="Tooltip">Location</div>
 							<div class="Others__icon"><i class="fa fa-map-marker"></i></div>
-							<div class="Others__value"><%= profile.location || "__" %></div>
+							<div class="Others__value">
+							<% if (locals.profile.address && locals.profile.address.city) { %>
+								<%= profile.address.city %>
+							<% } else { %>
+								__
+							<% } %>
+							</div>
 						</div>
 						<div class="Others__entry Tooltip__toggle">
 							<div class="Tooltip">Popularity</div>
@@ -52,17 +61,8 @@
 			<a href="#" class="Modal__toggle Settings__toggle" data-modal="Settings__Modal">
 				<i class="fa fa-cog"></i>
 			</a>
-			<% include ./partials/settings %>
 			<% } %>
 
-		</div>
-		<div class='User__photos Modal Modal--default utils-abs-centered'>
-			<form method="post" action="/api/users/poulet/photos" enctype="multipart/form-data">
-				<input type="file" name="profileImage" />
-				<input type="submit" />
-				<div class="Photos__grid" id="js-photos-container">
-				</div>
-			</form>
 		</div>
 		<div class="Profile__misc">
 			<section class="Profile__section Profile__tags">

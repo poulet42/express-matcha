@@ -2,11 +2,26 @@
 	<h3 class="Settings__title">Account Settings</h3>
 	<div class="Settings__container">
 		<div class="Settings__entry">
+			<div class="Settings__label">Gender and sexual orientation</div>
+			<div class="Settings__body">
+				<div class="Settings__actions">
+					<button type="submit" class="Settings__button Location__submit">Save</button>
+				</div>
+			</div>
+		</div>
+		<div class="Settings__entry">
 			<div class="Settings__label">Location</div>
 			<div class="Settings__body">
-				<a href="#" class="Location__btn">Locate me !</a>
-				<input type="text" name="" class='Settings__input Location__input'>
-				<input type="submit" class="Settings__button">
+				<div class='utils-frow Settings__row'>	
+					<a href="#" class="Location__btn">
+						<i class="fa fa-map-marker"></i>
+						Locate me !
+					</a>
+					<input type="text" name="" class='Settings__input Location__input' value="<%= profile.formattedAddress || "" %>">
+				</div>
+				<div class="Settings__actions">
+					<button type="submit" class="Settings__button Location__submit">Save</button>
+				</div>
 			</div>
 		</div>
 		<div class="Settings__entry">
@@ -14,6 +29,19 @@
 				Photos
 			</div>
 			<div class="Settings__body">
+				<form method="post" action="/api/users/poulet/photos" enctype="multipart/form-data" id="addPhotoForm" class="utils-hidden">
+					<input type="file" id="addImage" name="profileImage" class="Photos__add"/>
+					<input type="submit" />
+				</form>
+				<div class="Settings__photos utils-clearfix">
+					<div class="Photos__item">
+						<label class='Photos__toggle' for="addImage"></label>
+					</div>
+				</div>
+				<div class="Settings__actions">
+					<a href="#" class="Settings__button Photos__delete">Delete</a>
+					<a href="#" class="Settings__button Photos__setProfile">Use as profile picture</a>
+				</div>
 			</div>
 		</div>
 	</div>
