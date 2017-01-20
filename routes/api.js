@@ -174,11 +174,14 @@ module.exports = function(io) {
 		Users.getPhotos(req.params.username, (error, result) => {
 			var can = (result.length <= 5)
 			if (can) {
-				Users.addPhoto(req.params.username, req.file.filename)
+				// Users.addPhoto(req.params.username, req.file.filename)
 				res.status(201).send({path: "/upload/" + req.params.username + "/" + req.file.filename})
 			}
-			else 
-				return res.status(401).send({err: "You can't upload more than 5 files"})
+			else {
+				Users.deletePhoto(req.params.username, req.file.filename, (err, result) => {
+					return res.status(401).send({err: "You can't upload more than 5 files"})
+				})
+			}
 		})
 	})
 	router.delete('/users/:username/photos/:imageid', md.isAuth, upload, function(req, res, next) {
@@ -189,7 +192,8 @@ module.exports = function(io) {
 		}
 		Users.getAvatar(req.params.username)
 		.then( (result) => {
-			if (result == req.params.imageid)
+			console.log('current avatar : ', result[0], "req", req.params.imageid)
+			if (result[0] == req.params.imageid)
 				Users.deleteAvatar(req.params.username)
 		})
 		Users.getPhotos(req.params.username, (error, result) => {
@@ -201,6 +205,13 @@ module.exports = function(io) {
 			}
 		})
 		
+	})
+
+	router.put('/users/me/photos/:imageid', md.isAuth, function(req, res, next) {
+		Users.addPhoto(req.session.user.username, req.params.imageid)
+		.then( () => {
+			return res.status(200).send({path: "/upload/" + req.session.user.username + "/" + req.params.imageid})
+		})
 	})
 	router.get('/users/:username/interests', md.isAuth, function(req, res, next) {
 		Users.getInterests()

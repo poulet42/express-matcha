@@ -44,7 +44,7 @@
 		})
 	}
 	var getPhoto = function(filename) {
-		var itemClass = filename === profilePic ? "Photos__item Photos__item--selectable Photos__item--starred" : "Photos__item Photos__item--selectable"
+		var itemClass = (typeof profilePic != 'undefined' && filename === profilePic ? "Photos__item Photos__item--selectable Photos__item--starred" : "Photos__item Photos__item--selectable")
 		return (" \
 			<div class='" + itemClass + "'> \
 			<img src='/upload/" + username + "/" + filename + "' />\
@@ -76,8 +76,9 @@
 			processData: false,
 			success: function(result) {
 				console.log('photo added')
-				$('.Settings__photos').find('.Photos__item--selected').removeClass('.Photos__item--selected')
+				$('.Settings__photos').find('.Photos__item--selected').removeClass('Photos__item--selected')
 				$('.Settings__photos').children().first().after("<div class='Photos__item Photos__item--selected Photos__item--selectable'><img src='" + result.path + "' ></div>")
+				// $('.Profile__thumbnail').css({'backgroundImage': 'url("' +  result.path + '")'})
 			}
 		})
 	})
@@ -126,14 +127,16 @@
 	$('.Photos__setProfile').on('click', function() {
 		var targetedItem = $('.Photos__item--selected')
 		var targetedPhoto = targetedItem.find('img').attr('src');
-		if (!targetedItem || !targetedPhoto)
+		var imageId = targetedPhoto.split("/")[3]
+		if (!targetedItem || !targetedPhoto || !imageId)
 			return false;
 		$.ajax({
-			url: 'https://localhost:3001/api/users/me/photos',
+			url: 'https://localhost:3001/api/users/me/photos/' + imageId,
 			type: "PUT",
 			data: {photo: targetedPhoto},
 			success: function(result) {
-				targetedItem.addClass('.Photos__item--starred').siblings().removeClass('.Photos__item--starred')
+				targetedItem.addClass('Photos__item--starred').siblings().removeClass('Photos__item--starred')
+				$('.Profile__thumbnail').css({'backgroundImage': 'url("' +  result.path + '")'})
 			}
 		})
 	})

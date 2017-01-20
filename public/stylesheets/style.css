@@ -1180,3 +1180,48 @@ p {
       transform: translate(-50%, -50%);
       transition: color 0.3s;
     }
+
+    /**
+     *
+     * Dashboard
+     *
+     */
+    
+
+    .Dashboard__wrapper {
+      width: 960px;
+      max-width: 100%;
+      margin: 0 auto;
+      /*display: flex;*/
+    }
+
+    .Dashboard__card {
+      font-family: 'Fira Sans', 'Open sans', 'Helvetica Neue', sans-serif;
+      color: #666;
+      font-size: 12px;
+      padding: 20px;
+      border: 1px solid #fafafa;
+      box-shadow: 0px 0px 4px rgba(52,52,52,0.4);
+      float: left;
+      width: calc(1/4 * 100% - 3 * 20px / 4);
+      margin: 10px;
+      background-size: cover;
+      background-color: #fff;
+      height: 200px;
+    }
+
+    .Dashboard__card:nth-child(4n) {
+      margin-right: 0;
+    }
+    .Dashboard__card:nth-child(4n + 1) {
+      margin-left: 0;
+    }
+    .Card__Thumbnail {
+      text-align: center;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #fafafa;
+    }
+    .Card__informations {
+
+    }

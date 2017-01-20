@@ -75,7 +75,11 @@ module.exports = function(io) {
 		// })
 	})
 	router.get('/dashboard', md.isAuth, (req, res, next) => {
-
+		Users.listByDistance(req.session.user.id)
+		.then( (usersList) => {
+			console.log(usersList)
+			res.render('dashboard', {title: 'Matcha - Dashboard', users: usersList})	
+		})
 	})
 	// router.get('/settings', md.isAuth, (req, res, next) => {
 	// 	res.render('settings', {title: 'Matcha - Settings'})

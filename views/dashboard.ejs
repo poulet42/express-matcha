@@ -1,0 +1,13 @@
+<% include ./partials/header %>
+<section class="Container">
+	<div class="Dashboard__wrapper">
+		<% users.forEach(function(curr) { %>
+			<% if (curr.doc.id != user.id) { %>
+			<div class="Dashboard__card" style="background-image: url('<%= "upload/" + curr.doc.username + "/" + curr.doc.avatar %>')">
+			</div>
+			<% } %>
+		<% }) %>
+	</div>
+</section>
+<% include ./partials/sidebar %>
+<% include ./partials/footer %>
