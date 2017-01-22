@@ -1,13 +1,70 @@
 <% include ./partials/header %>
 <section class="Container">
 	<div class="Dashboard__wrapper">
-		<% users.forEach(function(curr) { %>
-			<% if (curr.doc.id != user.id) { %>
-			<div class="Dashboard__card" style="background-image: url('<%= "upload/" + curr.doc.username + "/" + curr.doc.avatar %>')">
+		<div class="Dashboard__filters">
+			<div class="Dropdown Sort__Dropdown" data-placeholder="Location" data-sort="Location">
+				<span class="Dropdown__label Dropdown__toggle">Sort by</span>
+				<div class="Dropdown__selected Dropdown__toggle">Location</div>
+				<div class="Dropdown__list">
+					<li class="Dropdown__item Dropdown__item--selected">Location</li>
+					<li class="Dropdown__item">Age</li>
+					<li class="Dropdown__item">Popularity</li>
+					<li class="Dropdown__item">Common tags</li>
+				</div>
 			</div>
-			<% } %>
-		<% }) %>
-	</div>
-</section>
-<% include ./partials/sidebar %>
-<% include ./partials/footer %>
+			<div class='Filter__entry'>
+				<span class="Filter__label">Minimum age</span>
+				<input type="number" class="Filter__input" data-filter="agemin" value="10" max="90" min="10" step="1">
+			</div>
+			<div class="Filter__entry">
+				<span class="Filter__label">Maximum age</span>
+				<input type="number" class="Filter__input" data-filter="agemax" value="50">
+			</div>
+			<div class="Filter__entry">
+				<span class="Filter__label">Maximum distance</span>
+				<input type="number" class="Filter__input" data-filter="distmax" min="0" max="50" value="20">
+			</div>
+			<div class="Filter__entry">
+				<span class="Filter__label">Common Tags</span>
+				<input type="number" class="Filter__input" data-filter="mintags" min="0" max="50" value="0">
+			</div>
+		</div>
+		<div class="Dashboard__grid utils-clearfix">
+			<% users.forEach(function(curr) { %>
+			<% if (curr.doc.id != user.id) { %>
+			<div class="Dashboard__card">
+				<a href='/profile/<%= curr.doc.username%>'>
+					<div class="Card__Thumbnail" 
+					<% if (curr.doc.avatar) { %>
+					style="background-image: url('<%= "upload/" + curr.doc.username + "/" + curr.doc.avatar %>')"
+					<% } %>
+					></div></a>
+					<div class='Card__content'>
+						<div class="Card__item Card__username"><i class="fa fa-user"></i><%- "<a href='/profile/" + curr.doc.username + "'>" + curr.doc.username + "</a>"%> <i class='fa fa-<%= curr.doc.gender == "female" ? "venus" : "mars" %>'></i> -  <%= curr.doc.age %></div>
+						<div class='Card__item Card__location'><i class="fa fa-map-marker"></i><%=  Math.round(curr.dist / 1000).toFixed(2) %> kilometers</div>
+						<div class='Card__item Card__popularity'><i class="fa fa-fire"></i></div>
+						<% if (curr.doc.interests.length > 0) { %>
+						<div class='Card__item Card__tags'>
+							<i class="fa fa-tag"></i>
+							<div style="display: inline-block;">
+								<% curr.doc.interests.forEach(function(currInterest) {%>
+								<div class="Tag Tag--little">
+									<%= currInterest.label %>
+								</div>
+								<% }) %>
+							</div>
+						</div>
+						<% } %>
+					</div>
+				</div>
+				<% } %>
+				<% }) %>
+			</div>
+		</div>
+	</section>
+	<script>
+		var users = <%- JSON.stringify(users) %>;
+	</script>
+	<script src="/javascripts/dashboard.js"></script>
+	<% include ./partials/sidebar %>
+	<% include ./partials/footer %>

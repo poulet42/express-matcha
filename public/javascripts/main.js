@@ -15,6 +15,24 @@ $(document).ready( function() {
     currentMenu.toggleClass('w-active')
   })
 
+  $('.Dropdown__toggle').on('click', function(e) {
+    $(this).parent().toggleClass('w-active')
+  })
+
+  $('.Dropdown__item').on('click', function() {
+    var comp = $(this).parents('.Dropdown');
+    var value = comp.data('placeholder');
+    $(this).toggleClass('Dropdown__item--selected').siblings().removeClass('Dropdown__item--selected')
+
+    if ($(this).hasClass('Dropdown__item--selected')) {
+      value = $(this).text();
+      comp.data('value', value)
+    } else {
+      comp.data('value', "")
+    }
+    comp.find('.Dropdown__selected').text(value)
+    comp.trigger('dropChange', value).removeClass('w-active')
+  })
   //Toggle pour les composants de type modal
   $('.Modal__toggle').on('click', function(e) {
     $('body').addClass('utils-overlay')

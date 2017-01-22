@@ -38,6 +38,9 @@ h3 {
 p {
   margin: 0;
 }
+input, button, textarea {
+  outline-style: none;
+}
 /**
  *
  * Transitions
@@ -780,6 +783,12 @@ p {
   margin-bottom: 10px;
   font-size: 12px;
 }
+.Tag--little {
+  font-size: 9px;
+  margin-right: 3px;
+  margin-bottom: 5px;
+  padding: 3px 5px;
+}
 .Tags__container {
   display: inline-block;
   max-width: 600px;
@@ -1181,47 +1190,229 @@ p {
       transition: color 0.3s;
     }
 
+
+
+
     /**
      *
      * Dashboard
      *
      */
-    
 
-    .Dashboard__wrapper {
+     .Dropdown, .Filter__entry {
+      position: relative;
+      font-size: 10px;
+      color: #666;
+      margin: 20px 10px; 
+      min-width: 140px;
+      flex: 1;
+    }
+
+    .Dropdown__label, .Filter__label {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      color: #676767;
+      padding: 10px 0;
+      font-size: 12px;
+      font-weight: bold;
+      user-select: none;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .Dropdown__selected {
+      user-select: none;
+      cursor: pointer;
+    }
+    .Dropdown__selected, .Filter__input {
+      border: 1px solid #e4e4e4;
+      border-radius: 4px;
+      padding: 8px 10px;
+      position: relative;
+      width: 100%;
+    }
+    .Dropdown__selected::after {
+      content: "\f078";
+      position: absolute;
+      font-family: fontawesome;
+      right: 10px;
+      transition: transform 0.2s;
+    }
+    .Dropdown__list {
+      user-select: none;
+      position: absolute;
+      top: 100%;
+      transform: translateY(-2px);
+      left: 0px;
+      right: 0px;
+      border: 1px solid #e4e4e4;
+      border-top: 0;
+      opacity: 0;
+      visibility: hidden;
+      background-color: #fff;
+      padding: 10px 0;
+      box-shadow: 0px 3px 3px rgba(52,52,52,0.07);
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .Dropdown__item {
+      padding: 10px;
+    }
+    .Dropdown__item:hover, .Dropdown__item--selected {
+      background-color: #fafafa;
+    }
+    .w-active .Dropdown__selected::after {
+      transform: rotateZ(-180deg);
+    }
+    .w-active .Dropdown__list {
+     opacity: 1;
+     visibility: visible; 
+   }
+
+
+
+    /**
+     *
+     * Filters
+     *
+     */
+
+
+    /**
+     *
+     * Dashboard
+     *
+     */
+
+
+     .Dashboard__wrapper {
       width: 960px;
       max-width: 100%;
       margin: 0 auto;
-      /*display: flex;*/
+      background-color: #fafafa;
+    }
+    .Dashboard__filters {
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0px 5px 9px rgba(12, 12 ,12, 0.05);
+      margin-bottom: 10px;
+      display: flex;
     }
 
     .Dashboard__card {
       font-family: 'Fira Sans', 'Open sans', 'Helvetica Neue', sans-serif;
       color: #666;
       font-size: 12px;
-      padding: 20px;
-      border: 1px solid #fafafa;
-      box-shadow: 0px 0px 4px rgba(52,52,52,0.4);
       float: left;
-      width: calc(1/4 * 100% - 3 * 20px / 4);
-      margin: 10px;
-      background-size: cover;
-      background-color: #fff;
-      height: 200px;
-    }
 
-    .Dashboard__card:nth-child(4n) {
-      margin-right: 0;
+      margin: 10px;
+      background-color: #fff;
+      transition: all 0.3s;
     }
-    .Dashboard__card:nth-child(4n + 1) {
-      margin-left: 0;
+    .Dashboard__card:hover {
+      box-shadow: 0px 0px 19px rgba(52,52,52,0.2);
+      transform: scale(1.04);
+    }
+    .Card__item.Card__tags {
+      display: flex;
+      align-items: baseline;
     }
     .Card__Thumbnail {
+      background-size: cover;
+      background-color: #333;
       text-align: center;
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #fafafa;
+      width: 100%;
+      height: 0;
+      padding-bottom: 100%;
+      position: relative;
     }
-    .Card__informations {
+    .Card__Thumbnail::after {
+      content: "Check profile";
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(52,52,52,0.8);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+      align-items: center;
+      align-content: center;
+      text-transform: uppercase;
+      justify-content: center;
+      color: #fff;
+      font-family: 'Montserrat';
+    }
+    .Card__Thumbnail:hover::after {
+      opacity: 1;
+      visibility: visible;
+    }
+    .Card__content {
+      padding: 10px;
+    }
+    .Card__item {
+      margin-bottom: 6px;
+      font-size: 10px;
+      font-family: 'Open Sans';
+      color: #999;
+      display: block;
+    }
+    .Card__item i {
+      margin-right: 5px;
+    }
 
+    @media screen and (min-width: 1025px) {
+      .Dashbaord__wrapper {
+        padding: 10px 20px;
+      }
+      .Dashboard__card {
+        width: calc(1/4 * 100% - 3 * 20px / 4);
+      }
+      .Dashboard__card:nth-child(4n) {
+        margin-right: 0;
+      }
+      .Dashboard__card:nth-child(4n + 1) {
+        margin-left: 0;
+      }
+    }
+    @media screen and (max-width: 1024px) {
+      .Dashboard__grid {
+        padding: 0 20px 10px;
+      }
+      .Dashboard__filters {
+        flex-direction: column;
+      }
+      .Dropdown__selected, .Filter__input {
+        padding: 16px 12px;
+      }
+      .Dashboard__card {
+        width: calc(1/2 * 100% - 20px / 2)
+      }
+      .Dashboard__card:nth-child(2n) {
+        margin-right: 0;
+      }
+      .Dashboard__card:nth-child(2n + 1) {
+        margin-left: 0;
+      }
+    }
+
+    @media screen and (max-width: 680px) {
+      .Dashboard__filters {
+        margin-bottom: 0;
+      }
+      .Dashboard__card {
+        width: 100%;
+      }
+      .Dashboard__card:nth-child(2n), .Dashboard__card:nth-child(2n + 1) {margin: 0;}
+      .Dashboard__grid {
+        padding: 0;
+      }
+      .Dashboard__card:hover {
+        transform: scale(1);
+      }
     }

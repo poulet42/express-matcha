@@ -77,13 +77,23 @@ module.exports = function(io) {
 	router.get('/dashboard', md.isAuth, (req, res, next) => {
 		Users.listByDistance(req.session.user.id)
 		.then( (usersList) => {
-			console.log(usersList)
-			res.render('dashboard', {title: 'Matcha - Dashboard', users: usersList})	
+			var currUser = usersList.filter( (elem) => {
+				return elem.doc.id === req.session.user.id
+			})[0]
+			console.log(currUser);
+			var newUsersList = usersList.map( (elem) => {
+				elem.doc.interests = elem.doc.interests.filter( (interestCursor) => {
+					console.log('curs', interestCursor)
+					return currUser.doc.interests.map( (e) => {
+						return e.id
+					}).indexOf(interestCursor.id) > -1
+				})
+				return elem
+			});
+			console.log(newUsersList)
+			res.render('dashboard', {title: 'Matcha - Dashboard', users: newUsersList})	
 		})
-	})
-	// router.get('/settings', md.isAuth, (req, res, next) => {
-	// 	res.render('settings', {title: 'Matcha - Settings'})
-	// })
+	});
 	router.get('/register', md.isGuest, (req, res, next) => {
 		res.render('register', { title: 'Matcha - Register'})
 	})

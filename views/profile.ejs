@@ -31,7 +31,7 @@
 					<% } %>
 				</div>
 				<div class="Profile__identity">
-					<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span></div>
+					<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span> <i class="fa fa-<%= profile.gender == "female" ? "venus" : "mars" %>"></i></div>
 					<div class="Profile__others">
 						<div class="Others__entry Tooltip__toggle">
 							<div class="Tooltip">Location</div>
@@ -47,7 +47,7 @@
 						<div class="Others__entry Tooltip__toggle">
 							<div class="Tooltip">Popularity</div>
 							<div class="Others__icon"><i class="fa fa-fire"></i></div>
-							<div class="Others__value"><%= profile.popularity || "__" %></div>
+							<div class="Others__value"><%= profile.popularity || "0" %></div>
 						</div>
 						<div class="Others__entry Tooltip__toggle">
 							<div class="Tooltip">Sexual orientation</div>
