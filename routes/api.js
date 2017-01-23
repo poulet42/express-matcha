@@ -200,8 +200,8 @@ module.exports = function(io) {
 			if (result.indexOf(req.params.imageid) != -1) {
 				return Users.deletePhoto(req.params.username, req.params.imageid, (err, result) => {
 					if (err) return res.status(401).send({error: err})
-					else res.status(200).send({ok: true, deleted: req.params.imageid})			
-				})
+						else res.status(200).send({ok: true, deleted: req.params.imageid})			
+					})
 			}
 		})
 		
@@ -329,6 +329,30 @@ module.exports = function(io) {
 				return res.send({location: req.body.location})
 			})
 		}
+	})
+
+	router.put('/users/me/gender', md.isAuth, (req, res, next) => {
+		var code = ['male', 'female', 'unknown'];
+		if (typeof code[req.body.gender] == "undefined")
+			return res.status(401).send({err: "This gender doesn't exist"})
+		Users.setGender(req.session.user.id, code[req.body.gender])
+		return res.status(200).send({ok: true})
+	})
+	router.put('/users/me/orientation', md.isAuth, (req, res, next) => {
+		var code = ['boys', 'girls', 'both'];
+		swaglogger(req.body.orientation)
+		console.log(code[parseInt(req.body.orientation)])
+		if (typeof code[parseInt(req.body.orientation)] == "undefined")
+			return res.status(401).send({err: "This gender doesn't exist"})
+		Users.setOrientation(req.session.user.id, code[req.body.orientation])
+		return res.status(200).send({ok: true})
+	})
+
+	router.put('/users/me/biography', md.isAuth, (req, res, next) => {
+		if (req.body.biography.length > 180)
+			return res.status(402).send({err: "Your biography is too long"})
+		Users.setBiography(req.session.user.id, escapeHtml(req.body.biography))
+		return res.status(200).send({ok: true})
 	})
 	return router;
 }

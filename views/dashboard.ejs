@@ -22,7 +22,7 @@
 			</div>
 			<div class="Filter__entry">
 				<span class="Filter__label">Maximum distance</span>
-				<input type="number" class="Filter__input" data-filter="distmax" min="0" max="50" value="20">
+				<input type="number" class="Filter__input" data-filter="distmax" min="0" max="500" value="200">
 			</div>
 			<div class="Filter__entry">
 				<span class="Filter__label">Common Tags</span>
@@ -42,7 +42,7 @@
 					<div class='Card__content'>
 						<div class="Card__item Card__username"><i class="fa fa-user"></i><%- "<a href='/profile/" + curr.doc.username + "'>" + curr.doc.username + "</a>"%> <i class='fa fa-<%= curr.doc.gender == "female" ? "venus" : "mars" %>'></i> -  <%= curr.doc.age %></div>
 						<div class='Card__item Card__location'><i class="fa fa-map-marker"></i><%=  Math.round(curr.dist / 1000).toFixed(2) %> kilometers</div>
-						<div class='Card__item Card__popularity'><i class="fa fa-fire"></i></div>
+						<div class='Card__item Card__popularity'><i class="fa fa-fire"></i><%= curr.doc.popularity %></div>
 						<% if (curr.doc.interests.length > 0) { %>
 						<div class='Card__item Card__tags'>
 							<i class="fa fa-tag"></i>
@@ -62,7 +62,7 @@
 			</div>
 		</div>
 	</section>
-	<script>
+	<script id="mdr">
 		var users = <%- JSON.stringify(users) %>;
 	</script>
 	<script src="/javascripts/dashboard.js"></script>

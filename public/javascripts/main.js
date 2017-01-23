@@ -52,9 +52,9 @@ $(document).ready( function() {
       $('.utils-overlay').removeClass('utils-overlay')
     }
   })
-  if (typeof username !== 'undefined') {
+  // if (typeof username !== 'undefined') {
     var notif = new Notification ({
-      source: {data: 'https://localhost:3001/api/users/' + username + '/notifications', type: 'ajax'},
+      source: {data: 'https://localhost:3001/api/users/me/notifications', type: 'ajax'},
       limit: 5,
       template: function(notif) {
         return ('<li class="Menu__item"> \
@@ -68,7 +68,7 @@ $(document).ready( function() {
     socket.on('notification', (notification) => {
       notif.create(notification)
     })
-  } else {
-    console.log('shieeet')
-  }
+  // } else {
+  //   console.log('shieeet')
+  // }
 })

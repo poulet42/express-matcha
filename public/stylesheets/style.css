@@ -586,6 +586,9 @@ input, button, textarea {
   -o-transition: transform .1s;
   transition: transform .1s;
 }
+.Profile__btn--red {
+  color: #d25a5a;
+}
 .Btn__icon i {
   vertical-align: middle;
 }
@@ -617,6 +620,38 @@ input, button, textarea {
   top: 40px;
   font-size: 18px;
   color: #999;
+}
+
+.User__biography {
+  font-size: 12px;
+  line-height: 20px;
+  color: #999;
+  font-family: 'Open Sans', 'Helveitca Neue', sans-serif;
+  outline-style: none;
+  width: 100%;
+  height: 200px;
+}
+
+.Biography__counter {
+  position: absolute;
+  font-size: 10px;
+  color: #3399ff;
+  top: 0;
+  display: none;
+}
+textarea.User__biography:focus ~ .Biography__counter {
+  display: block;
+}
+textarea.User__biography {
+  resize: none;
+  border: 1px solid transparent;
+}
+textarea.User__biography:hover {
+  transition: border-color 0.3s;
+  border-color: #f0f0f0;
+}
+textarea.User__biography:focus {
+  border-color: #e4e4e4;
 }
 /* TEST */
 .Profile__user--is-online::after {
@@ -1013,6 +1048,7 @@ input, button, textarea {
     font-weight: bold;
     color: #999;
     padding: 20px 0;
+    cursor: pointer;
     /*border-bottom: 1px solid #efefef;*/
   }
   .Settings__label:after {
@@ -1066,15 +1102,16 @@ input, button, textarea {
     }*/
     .Location__btn {
       padding: 12px;
-      color: #ffffff;
+      color: #999;
       font-size: 10px;
-      background-color: #d25a5a;
+      background-color: #e4e4e4;
       border-top-left-radius: 4px;
       border-bottom-left-radius: 4px;
-      /* border: 1px solid #27ae60; */
+      border-right: 1px solid #e4e4e4;
+      width: 40px;
+      text-align: center;
     }
     .Location__btn i {
-      margin-right: 10px;
       font-size: 16px;
       vertical-align: middle;
     }
@@ -1366,6 +1403,45 @@ input, button, textarea {
       margin-right: 5px;
     }
 
+
+    /*switch component*/
+    .Switch__container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .Switch {
+      display: inline-flex;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid #efefef;
+      width: 300px;
+      max-width: 100%;
+    }
+
+
+    .Switch__choice {
+      flex: 1;
+      display: inline-block;
+      color: #a9a9a9;
+      border-right: 1px solid #efefef;
+      text-align: center;
+    }
+    .Switch__choice:last-child {
+      border-right: 0;
+    }
+    .Switch__text {
+      width: 100%;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 8px 10px;
+      display: inline-block;
+      background-color: #fff;
+      transition: background-color 0.3s;
+      white-space: nowrap;
+    }
+    .Switch__toggle:checked ~ .Switch__text {
+      background-color: #efefef;
+    }
     @media screen and (min-width: 1025px) {
       .Dashbaord__wrapper {
         padding: 10px 20px;
@@ -1387,7 +1463,7 @@ input, button, textarea {
       .Dashboard__filters {
         flex-direction: column;
       }
-      .Dropdown__selected, .Filter__input {
+      .Dropdown__item, .Dropdown__selected, .Filter__input {
         padding: 16px 12px;
       }
       .Dashboard__card {

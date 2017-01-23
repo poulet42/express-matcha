@@ -1,9 +1,9 @@
 <% include ./partials/header %>
 <section class="Container">
 	<div class="Profile">
-	<% if (profile.id == user.id) { %>
-	<% include ./partials/settings %>
-	<% } %>
+		<% if (profile.id == user.id) { %>
+		<% include ./partials/settings %>
+		<% } %>
 		<div class="Profile__infos">
 			<div class="Profile__cover">
 				<% if (profile.id != user.id) { %>
@@ -12,12 +12,15 @@
 						<span class='Btn__text'><% if (profile.likedStatus === true) { %>Dislike<% } else { %>Like<% } %></span>
 						<span class='Btn__icon'><i class='fa fa-heart'></i></span>
 					</a>
-					<a href="#" class="Profile__btn Profile__btn--chat Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled">
-						<span class='Btn__text'>Chat</span>
-						<span class='Btn__icon'><i class='fa fa-comment'></i></span>
-						<div class="Tooltip">
-							You can't chat with this user right now
-						</div>
+					<a href="#" class="Profile__btn Profile__btn--red Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled">
+						<span class='Btn__text'>Block</span>
+						<span class='Btn__icon'><i class='fa fa-ban'></i></span>
+						<div class="Tooltip">This user won’t appear in the search results and won’t generate additional notifications</div>
+					</a>
+					<a href="#" class="Profile__btn Profile__btn--red Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled">
+						<span class='Btn__text'>Report</span>
+						<span class='Btn__icon'><i class="fa fa-flag" aria-hidden="true"></i></span>
+						<div class="Tooltip">This user will be reported to an administrator</div>
 					</a>
 				</div>
 				<% } %>
@@ -31,17 +34,25 @@
 					<% } %>
 				</div>
 				<div class="Profile__identity">
-					<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span> <i class="fa fa-<%= profile.gender == "female" ? "venus" : "mars" %>"></i></div>
+					<div class="Profile__name"><span class="Name__first"><%= profile.firstname || "???" %></span><span class="Name__last"><%= profile.lastname || "???" %></span> 
+						<% if (profile.gender == "male") { %>
+						<i class="fa fa-mars"></i>
+						<% } else if(profile.gender == "female") {%>
+						<i class="fa fa-venus"></i>
+						<% } else { %>
+						<i class="fa fa-genderless"></i>
+						<% } %>
+					</div>
 					<div class="Profile__others">
 						<div class="Others__entry Tooltip__toggle">
 							<div class="Tooltip">Location</div>
 							<div class="Others__icon"><i class="fa fa-map-marker"></i></div>
 							<div class="Others__value">
-							<% if (locals.profile.address && locals.profile.address.city) { %>
+								<% if (locals.profile.address && locals.profile.address.city) { %>
 								<%= profile.address.city %>
-							<% } else { %>
+								<% } else { %>
 								__
-							<% } %>
+								<% } %>
 							</div>
 						</div>
 						<div class="Others__entry Tooltip__toggle">
@@ -94,7 +105,12 @@
 			<section class="Profile__section Profile__about">
 				<h2 class="Section__header">About</h2>
 				<div class="Section__body">
-					<%= profile.description || "" %>
+					<% if (user.id === profile.id) { %>
+					<textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="180" class="User__biography" placeholder="No description yet..."><%- profile.biography || "" -%></textarea>
+					<span class="Biography__counter"><%= typeof profile.biography != "undefined" ? 180 - profile.biography.length : 180 %></span>
+					<% } else { -%>
+					<article class="User__biography"><%- profile.biography -%></article>
+					<% } %>
 				</div>
 			</section>
 		</div>
@@ -106,12 +122,12 @@
 	var dbInterests = <%- JSON.stringify(profile.interests) %>;
 	<% if (profile.username) { %>
 		var username = <%- JSON.stringify(profile.username) %>;
-	<% } %>
-	<% if (profile.likedStatus) { %>
-		var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
-	<% } if (profile.avatar) { %>
-		var profilePic = <%- JSON.stringify(profile.avatar) %>;
-	<% } %>
-</script>
-<script src='/javascripts/profile.js'></script>
-<% include ./partials/footer %>
+		<% } %>
+		<% if (profile.likedStatus) { %>
+			var likeStatus = <%- JSON.stringify(profile.likedStatus) %>
+			<% } if (profile.avatar) { %>
+				var profilePic = <%- JSON.stringify(profile.avatar) %>;
+				<% } %>
+			</script>
+			<script src='/javascripts/profile.js'></script>
+			<% include ./partials/footer %>

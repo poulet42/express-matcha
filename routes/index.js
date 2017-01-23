@@ -80,6 +80,9 @@ module.exports = function(io) {
 			var currUser = usersList.filter( (elem) => {
 				return elem.doc.id === req.session.user.id
 			})[0]
+			var tabOrientation = {girls: ["female"], boys: ["male"], both: ["male", "female", "unknown"]}
+			var lookingFor = tabOrientation[currUser.doc.orientation];
+			// console.log('current user looking for : ', lookingFor, 'and is a : ', isLookedBy)
 			console.log(currUser);
 			var newUsersList = usersList.map( (elem) => {
 				elem.doc.interests = elem.doc.interests.filter( (interestCursor) => {
@@ -90,7 +93,12 @@ module.exports = function(io) {
 				})
 				return elem
 			});
-			console.log(newUsersList)
+
+			newUsersList = newUsersList.filter( (userCheck) => {
+				console.log("\n\n\n---------------\n\n\n", userCheck.doc.orientation, "\n\n\n---------------\n\n\n")
+				return (lookingFor.indexOf(userCheck.doc.gender) != -1
+						&& tabOrientation[userCheck.doc.orientation].indexOf(currUser.doc.gender) != -1)
+			})
 			res.render('dashboard', {title: 'Matcha - Dashboard', users: newUsersList})	
 		})
 	});

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	$('#test').remove();
 	$('.Sort__Dropdown').on('dropChange', function(e, val) {
 		console.log('shit')
 		sortProfilesBy({
@@ -23,18 +24,10 @@ $(document).ready(function() {
 		param.sort = (param.sort || "Location").toLowerCase();
 		var use = 
 		{
-			age: function(a, b) {
-				return a.doc.age <= b.doc.age 		
-			},
-			location: function(a, b) {
-				return a.dist <= b.dist
-			},
-			popularity: function(a, b) {
-				return a.doc.popularity >= b.doc.popularity
-			},
-			"common tags": function(a, b) {
-				return a.doc.interests.length > b.doc.interests.length
-			}
+			age: function(a, b) {return a.doc.age <= b.doc.age},
+			location: function(a, b) {return a.dist <= b.dist},
+			popularity: function(a, b) {return a.doc.popularity >= b.doc.popularity},
+			"common tags": function(a, b) {return a.doc.interests.length > b.doc.interests.length}
 		}
 		cb(param.data.sort(use[param.sort]));
 	}
@@ -42,7 +35,7 @@ $(document).ready(function() {
 	var filterUsers = function(userTab) {
 		var ageMin = Math.max(parseInt($('.Filter__input[data-filter="agemin"]').val()), 12)
 		var ageMax = Math.min(parseInt($('.Filter__input[data-filter="agemax"]').val()), 90)
-		var distMax = Math.min(parseInt($('.Filter__input[data-filter="distmax"]').val()) * 10000, 200000)
+		var distMax = Math.min(parseInt($('.Filter__input[data-filter="distmax"]').val()) * 1000, 200000)
 		var commonTagsMin = Math.max(parseInt($('.Filter__input[data-filter="mintags"]').val()), 0) || 0
 		console.log("filter with :", "age > " + ageMin + " < " + ageMax, "dist < " + distMax, "common tags > " + commonTagsMin)
 		return userTab.filter( function(elem) {

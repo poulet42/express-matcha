@@ -102,4 +102,22 @@ $(document).ready(function() {
 			}
 		})
 	})
+
+
+	var bioTimeout = null;
+	$('textarea.User__biography').on('keyup', function(e) {
+		if(bioTimeout)
+			clearTimeout(bioTimeout);
+		var txt = $('textarea.User__biography').val().trim();
+		var remainingChar = 180 - txt.length;
+		$('.Biography__counter').text(Math.max(remainingChar, 0))
+		bioTimeout = setTimeout(function() {
+			$.ajax({
+				url: "https://localhost:3001/api/users/me/biography",
+				type: "PUT",
+				data: {biography: $('.User__biography').val().trim().substring(0, 180)}
+			})
+		}, 1000);
+		
+	})
 })

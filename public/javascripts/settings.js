@@ -140,4 +140,41 @@
 			}
 		})
 	})
+
+	$('.Orientation__choice').on('change', function() {
+		var checkedBox = $('.Orientation__choice:checked')
+		if (checkedBox.length != 1)
+			return false;
+		var orientation = checkedBox.val();
+		$.ajax({
+			url: "https://localhost:3001/api/users/me/orientation",
+			type: "PUT",
+			data: {orientation},
+			success: function(result) {
+				console.log('k', result)
+			},
+			catch: function(err) {
+				alert(err)
+			}
+		})
+		console.log(orientation)
+	})
+	$('.Gender__choice').on('change', function() {
+		var checkedBox = $('.Gender__choice:checked')
+		if (checkedBox.length != 1)
+			return false;
+		var gender = checkedBox.val();
+		$.ajax({
+			url: "https://localhost:3001/api/users/me/gender",
+			type: "PUT",
+			data: {gender},
+			success: function(result) {
+				console.log('k', result)
+			},
+			catch: function(err) {
+				alert(err)
+			}
+		})
+		console.log(gender)
+	})
 })()

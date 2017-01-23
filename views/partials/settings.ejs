@@ -2,10 +2,44 @@
 	<h3 class="Settings__title">Account Settings</h3>
 	<div class="Settings__container">
 		<div class="Settings__entry">
+			<div class="Settings__label">Gender</div>
+			<div class="Settings__body">
+			<div class="Switch__container">
+					<div class="Switch">
+						<div class="Switch__choice">
+							<input type="radio" value="0" name="gender" id="male" class="utils-hidden Gender__choice Switch__toggle" <%= profile.gender === "male" ? "checked" : "" %> />
+							<label for="male" class="Switch__text">Male</label>
+						</div>
+						<div class="Switch__choice">
+							<input type="radio" value="1" name="gender" id="female" class="utils-hidden Gender__choice Switch__toggle" <%= profile.gender === "female" ? "checked" : "" %> />
+							<label for="female" class="Switch__text">Female</label>
+						</div>
+						<div class="Switch__choice">
+							<input type="radio" value="2" name="gender" id="unknown" class="utils-hidden Gender__choice Switch__toggle" <%= profile.gender === "unknown" ? "checked" : "" %> />
+							<label for="unknown" class="Switch__text">I don't know yet</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="Settings__entry">
 			<div class="Settings__label">Sexual orientation</div>
 			<div class="Settings__body">
-				<div class="Settings__actions">
-					<button type="submit" class="Settings__button Location__submit">Save</button>
+			<div class="Switch__container">
+					<div class="Switch">
+						<div class="Switch__choice">
+							<input type="radio" value="0" name="orientation" id="boys" class="utils-hidden Orientation__choice Switch__toggle" <%= profile.orientation === "boys" ? "checked" : "" %> />
+							<label for="boys" class="Switch__text">Boys</label>
+						</div>
+						<div class="Switch__choice">
+							<input type="radio" value="1" name="orientation" id="girls" class="utils-hidden Orientation__choice Switch__toggle" <%= profile.orientation === "girls" ? "checked" : "" %> />
+							<label for="girls" class="Switch__text">Girls</label>
+						</div>
+						<div class="Switch__choice">
+							<input type="radio" value="2" name="orientation" id="both" class="utils-hidden Orientation__choice Switch__toggle" <%= profile.orientation === "both" ? "checked" : "" %> />
+							<label for="both" class="Switch__text">Whatever</label>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -13,10 +47,7 @@
 			<div class="Settings__label">Location</div>
 			<div class="Settings__body">
 				<div class='utils-frow Settings__row'>	
-					<a href="#" class="Location__btn">
-						<i class="fa fa-map-marker"></i>
-						Locate me !
-					</a>
+					<a href="#" class="Location__btn"><i class="fa fa-map-marker"></i></a>
 					<input type="text" name="" class='Settings__input Location__input' value="<%= profile.formattedAddress || "" %>">
 				</div>
 				<div class="Settings__actions">
