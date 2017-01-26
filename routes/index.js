@@ -20,10 +20,17 @@ module.exports = function(io) {
 				res.status(404).json({ error: 'User not found' })
 				return next({error: 'User not found'})
 			} else if (req.params.username != req.session.user.username) {
-				Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
-				if (io.users[req.params.username]) {
-					io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
-				}
+				Users.isBlocked(req.params.username, req.session.user.id) //reprendre ici !!!!!!!!!!!
+				.then( (isBlocked) => {
+					console.log("is blocked ??", isBlocked)
+					user['isBlocked'] = isBlocked;
+					if (isBlocked == true)
+						return false;
+					Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
+					if (io.users[req.params.username]) {
+						io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
+					}
+				})
 			}
 			userData = user;
 			return Users.isLiked(req.session.user.username, req.params.username)
@@ -77,6 +84,7 @@ module.exports = function(io) {
 	router.get('/dashboard', md.isAuth, (req, res, next) => {
 		Users.listByDistance(req.session.user.id)
 		.then( (usersList) => {
+			console.log("/!/\n\n\n---------\n\n\n",usersList,"\n\n\n---------\n\n\n")
 			var currUser = usersList.filter( (elem) => {
 				return elem.doc.id === req.session.user.id
 			})[0]
@@ -97,7 +105,8 @@ module.exports = function(io) {
 			newUsersList = newUsersList.filter( (userCheck) => {
 				console.log("\n\n\n---------------\n\n\n", userCheck.doc.orientation, "\n\n\n---------------\n\n\n")
 				return (lookingFor.indexOf(userCheck.doc.gender) != -1
-						&& tabOrientation[userCheck.doc.orientation].indexOf(currUser.doc.gender) != -1)
+					&& tabOrientation[userCheck.doc.orientation].indexOf(currUser.doc.gender) != -1
+					&& currUser.doc.blocked.indexOf(userCheck.doc.username) == -1)
 			})
 			res.render('dashboard', {title: 'Matcha - Dashboard', users: newUsersList})	
 		})

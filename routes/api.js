@@ -76,69 +76,108 @@ module.exports = function(io) {
 			}
 		})
 	})
+
+	router.post('/users/:username/block', md.isAuth, function(req, res, next) {
+		if (req.session.user.username == req.params.username)
+			return res.status(401).send({error: "You can't block yourself !"})
+		var currentUser = req.session.user.id;
+		var targetedUser = req.params.username;
+		Users.toggleBlock(currentUser, targetedUser)
+		.then( (isBlocked) => {
+			swaglogger("isBlocked == " + isBlocked)
+			res.status(200).send({blocked: isBlocked})
+		})
+	})
+
 	router.post('/users/:username/likes', md.isAuth, function(req, res, next) {
 		if (req.session.user.username == req.params.username)
 			return res.status(401).send({error: "You can't like yourself !"})
-		var currentUser = req.session.user.username;
-		var targetedUser = req.params.username;
-		Users.toggleLike(currentUser, targetedUser)
-		.then( (isLiked) => {
-			swaglogger("isLiked == " + isLiked)
-			res.status(200).send({liked: isLiked})
-			sendNotification({
-				from: currentUser,
-				to: targetedUser,
-				type: isLiked ? 'like' : 'dislike'
-			})
-			return isLiked && Users.isLiked(targetedUser, currentUser) 
-		})
-		.then( (match) => {
-			swaglogger("Is it a match ? " + match)
-			if (match === true) {
-				sendNotification({from: currentUser, to: targetedUser, type: 'match'});
-				sendNotification({from: targetedUser, to: currentUser, type: 'match'});
-				return Chat.getChatRoomFromUsers([currentUser, targetedUser]).then( (roomId) => {
-					swaglogger("The chat room already exists ?")
-					swaglogger(roomId)
-					if (roomId.length) {
-						Chat.enableRoom([currentUser, targetedUser])
-						swaglogger("Yes, " + roomId[0].id)
-						return roomId[0].id;
-					}
-					else {
-						swaglogger("No, creation of the room")
-						return Chat.createRoom([currentUser, targetedUser]).then( (dbChatRes) => {swaglogger(dbChatRes); return dbChatRes.generated_keys[0]})
-					}
+		Users.getAvatar(req.session.user.username)
+		.then( avatar => {
+			return avatar != "" && typeof avatar != "undefined"
+		}).then( (canLike) => {
+			if (!canLike)
+				return res.status(401).send({error: "You must upload a profile picture first"})
+			var currentUser = req.session.user.username;
+			var targetedUser = req.params.username;
+			Users.toggleLike(currentUser, targetedUser)
+			.then( (isLiked) => {
+				swaglogger("isLiked == " + isLiked)
+				res.status(200).send({liked: isLiked})
+				sendNotification({
+					from: currentUser,
+					to: targetedUser,
+					type: isLiked ? 'like' : 'dislike'
 				})
-			} else {
-				console.log('disable room')
-				Chat.disableRoom([currentUser, targetedUser])
-				return -1
-			}
+				return isLiked && Users.isLiked(targetedUser, currentUser) 
+			})
+			.then( (match) => {
+				swaglogger("Is it a match ? " + match)
+				if (match === true) {
+					sendNotification({from: currentUser, to: targetedUser, type: 'match'});
+					sendNotification({from: targetedUser, to: currentUser, type: 'match'});
+					return Chat.getChatRoomFromUsers([currentUser, targetedUser]).then( (roomId) => {
+						swaglogger("The chat room already exists ?")
+						swaglogger(roomId)
+						if (roomId.length) {
+							Chat.enableRoom([currentUser, targetedUser])
+							swaglogger("Yes, " + roomId[0].id)
+							return roomId[0].id;
+						}
+						else {
+							swaglogger("No, creation of the room")
+							return Chat.createRoom([currentUser, targetedUser]).then( (dbChatRes) => {swaglogger(dbChatRes); return dbChatRes.generated_keys[0]})
+						}
+					})
+				} else {
+					console.log('disable room')
+					Chat.disableRoom([currentUser, targetedUser])
+					return -1
+				}
+			})
+			.then ( (chatId) => {
+				sendChatStatus({to: currentUser, from: targetedUser, can: chatId != -1, chatId: chatId != -1 ? chatId : false})
+				sendChatStatus({from: currentUser, to: targetedUser, can: chatId != -1, chatId: chatId != -1 ? chatId : false})
+			})
 		})
-		.then ( (chatId) => {
-			sendChatStatus({to: currentUser, from: targetedUser, can: chatId != -1, chatId: chatId != -1 ? chatId : false})
-			sendChatStatus({from: currentUser, to: targetedUser, can: chatId != -1, chatId: chatId != -1 ? chatId : false})
-		})
-
 	})
 	function swaglogger(txt) {
 		console.log('\n\n-----\n', txt, '\n-----\n\n')
 	}
 	function sendNotification(args) {
-		Users.addNotifications({emitter: args.from, receiver: args.to, type: args.type, created: new Date().toLocaleString()})
-		.then( (dbInsertion) => {
-			if (io.users[args.to]) {
-				io.users[args.to].emit('notification', notif({emitter: args.from, receiver: args.to, type: args.type, id: dbInsertion.generated_keys[0]}))
-				swaglogger("notification sent from " + args.from + " to " + args.to);
+		Users.getBlacklist(args.to)
+		.then( (blacklist) => {
+			swaglogger("blacklist ::: ")
+			swaglogger(blacklist)
+			swaglogger("oh shit waddup")
+			swaglogger("blacklisted ? " + blacklist.indexOf(args.from) != -1 ? "true" : "false")
+			if (blacklist.indexOf(args.from) != -1) {
+				return false;
 			}
+			Users.addNotifications({emitter: args.from, receiver: args.to, type: args.type, created: new Date().toLocaleString()})
+			.then( (dbInsertion) => {
+				if (io.users[args.to]) {
+					io.users[args.to].emit('notification', notif({emitter: args.from, receiver: args.to, type: args.type, id: dbInsertion.generated_keys[0]}))
+					swaglogger("notification sent from " + args.from + " to " + args.to);
+				}
+			})
 		})
 	};
 	function sendChatStatus(args) {
-		console.log('sendChatStatus !', args)
-		if (io.users[args.to]) {
-			io.users[args.to].emit('chatStatus', args)
-		}
+		Users.getBlacklist(args.to)
+		.then( (blacklist) => {
+			swaglogger("blacklist ::: ")
+			swaglogger(blacklist)
+			swaglogger("oh shit waddup")
+			swaglogger("blacklisted ? " + blacklist.indexOf(args.from) != -1 ? "true" : "false")
+			if (blacklist.indexOf(args.from) != -1) {
+				return false;
+			}
+			console.log('sendChatStatus !', args)
+			if (io.users[args.to]) {
+				io.users[args.to].emit('chatStatus', args)
+			}
+		})
 	}
 	router.post('/users/:username/notifications', md.isAuth, function(req, res, next) {
 		Users.getNotifications(req.session.user.username).then( (result) => {

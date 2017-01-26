@@ -53,10 +53,15 @@ $(document).ready(function() {
 	
 	var interestsDel = $('.Tag__close')
 	var toggleLike = $('#js-profile-like');
-	var thumbAdd = $('.Thumbnail__add')
+	var toggleBlock = $('#js-profile-block');
+	var thumbAdd = $('.Thumbnail__add');
 	var editLikeBtn = function(bool) {
 		toggleLike.removeClass('Loading').find('.Btn__text').text(bool === true ? "Dislike" : "Like")
 		toggleLike.find('.Btn__icon i').addClass('fa-heart').removeClass('fa-circle-o-notch fa-spin fa-fw')
+	}
+	var editBlockBtn = function(bool) {
+		toggleBlock.removeClass('Loading').find('.Btn__text').text(bool === true ? "Unblock" : "Block")
+		toggleBlock.find('.Btn__icon i').addClass('fa-ban').removeClass('fa-circle-o-notch fa-spin fa-fw')
 	}
 	$('.Tags__container').on('click', '.Tag__close', function(e) {
 		e.preventDefault()
@@ -82,6 +87,26 @@ $(document).ready(function() {
 			console.log(x)
 		}
 	})
+
+	toggleBlock.on('click', function(e) {
+		if (toggleLike.is('Loading'))
+			return ;
+		toggleBlock.addClass('Loading').find('.Btn__icon i').removeClass('fa-ban').addClass('fa-circle-o-notch fa-spin fa-fw')
+		e.preventDefault();
+		$.ajax({
+			url: 'https://localhost:3001/api/users/' + username + '/block',
+			type: 'POST',
+			success: function(data) {
+				blockedStatus = data.blocked
+				editBlockBtn(blockedStatus)
+				console.log(username)
+			},
+			error: function(err) {
+				console.log(err)
+				toggleLike.removeClass('Loading').find('.Btn__icon i').addClass('fa-ban').removeClass('fa-circle-o-notch fa-spin fa-fw')
+			}
+		})
+	})
 	toggleLike.on('click', function(e) {
 		if (toggleLike.is('Loading'))
 			return ;
@@ -99,6 +124,7 @@ $(document).ready(function() {
 			},
 			error: function(err) {
 				console.log(err)
+				toggleLike.removeClass('Loading').find('.Btn__icon i').addClass('fa-heart').removeClass('fa-circle-o-notch fa-spin fa-fw')
 			}
 		})
 	})
@@ -120,4 +146,6 @@ $(document).ready(function() {
 		}, 1000);
 		
 	})
+
+	$("")
 })

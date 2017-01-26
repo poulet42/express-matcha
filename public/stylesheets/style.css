@@ -675,7 +675,7 @@ textarea.User__biography:focus {
   width: 100%;
   height: auto;
   }*/
-  .Thumbnail__add {
+  .Thumbnail__add, .Thumbnail__see {
     position: absolute;
     top: 0;
     left: 0;
@@ -687,6 +687,7 @@ textarea.User__biography:focus {
     transition: all 0.2s;
     background: rgba(252,252,252,0.9);
   }
+
   .Thumbnail__add:after {
     position: absolute;
     content: '+';
@@ -696,6 +697,17 @@ textarea.User__biography:focus {
     color: #999;
     font-weight: bolder;
     font-size: 48px;
+  }
+  .Thumbnail__see:after {
+    content: "See all photos";
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    position: absolute;
+    white-space: nowrap;
+    color: #c7c7c7;
+    font-weight: lighter;
   }
   .Modal--default {
     width: 600px;
@@ -707,6 +719,7 @@ textarea.User__biography:focus {
     box-shadow: 0px 0px 12px rgba(52,52,52,0.1);
   }
   .Profile__thumbnail:hover .Thumbnail__add,
+  .Profile__thumbnail:hover .Thumbnail__see,
   .Thumbnail__add--is-visible {
     visibility: visible;
     opacity: 1;
@@ -1312,17 +1325,64 @@ textarea.User__biography:focus {
 
     /**
      *
-     * Filters
+     * Lightbox
      *
      */
 
-
+     .Lightbox {
+      background-color: #222;
+      position: relative;
+      top: 60px;
+      left: 60px;
+      right: 60px;
+      bottom: 60px;
+      position: fixed;
+      text-align: center;
+      display: flex;
+    }
+    .Lightbox__preview {
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
+      flex: 0;
+    }
+    .Lightbox__btn {
+      color: #fff;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      font-size: 32px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .Lightbox:hover .Lightbox__btn {
+      opacity: 1;
+    }
+    .Lightbox__btn i {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      text-shadow: 0 0 6px rgba(52,52,52,0.4)
+    }
+    .Lightbox__btn--previous {
+      left: 0;
+      width: 45%;
+    }
+    .Lightbox__btn--previous i {
+      left: 20px;
+    }
+    .Lightbox__btn--next i {
+      right: 20px;
+    }
+    .Lightbox__btn--next {
+      right: 0;
+      width: 55%;
+    }
     /**
      *
      * Dashboard
      *
      */
-
 
      .Dashboard__wrapper {
       width: 960px;
@@ -1334,10 +1394,11 @@ textarea.User__biography:focus {
       background-color: #fff;
       padding: 20px;
       box-shadow: 0px 5px 9px rgba(12, 12 ,12, 0.05);
-      margin-bottom: 10px;
       display: flex;
     }
-
+    .Dashboard__grid {
+      padding: 10px 20px;
+    }
     .Dashboard__card {
       font-family: 'Fira Sans', 'Open sans', 'Helvetica Neue', sans-serif;
       color: #666;

@@ -3,6 +3,8 @@
 	<div class="Profile">
 		<% if (profile.id == user.id) { %>
 		<% include ./partials/settings %>
+		<% } else { %>
+		<% include ./partials/lightbox %>
 		<% } %>
 		<div class="Profile__infos">
 			<div class="Profile__cover">
@@ -12,12 +14,12 @@
 						<span class='Btn__text'><% if (profile.likedStatus === true) { %>Dislike<% } else { %>Like<% } %></span>
 						<span class='Btn__icon'><i class='fa fa-heart'></i></span>
 					</a>
-					<a href="#" class="Profile__btn Profile__btn--red Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled">
-						<span class='Btn__text'>Block</span>
+					<a href="#" class="Profile__btn Profile__btn--red Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled" id="js-profile-block">
+						<span class='Btn__text'><% if (profile.isBlocked === true) { %>Unblock<% } else { %>Block<% } %></span>
 						<span class='Btn__icon'><i class='fa fa-ban'></i></span>
 						<div class="Tooltip">This user won’t appear in the search results and won’t generate additional notifications</div>
 					</a>
-					<a href="#" class="Profile__btn Profile__btn--red Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled">
+					<a href="#" class="Profile__btn Profile__btn--red Profile__btn--with-icon Tooltip__toggle Profile__btn--is-disabled" id="js-profile-report">
 						<span class='Btn__text'>Report</span>
 						<span class='Btn__icon'><i class="fa fa-flag" aria-hidden="true"></i></span>
 						<div class="Tooltip">This user will be reported to an administrator</div>
@@ -31,6 +33,8 @@
 					<% } %>>
 					<% if (profile.id === user.id) { %>
 					<a class="Thumbnail__add Modal__toggle" href="#photos" data-modal="Settings__Modal"></a>
+					<% } else { %>
+					<a class="Thumbnail__see Modal__toggle" href="#" data-modal="Photos__Modal"></a>
 					<% } %>
 				</div>
 				<div class="Profile__identity">
