@@ -1,9 +1,9 @@
 
 <% include partials/header %>
 <div class="Register Wrapper">
-  <div class="Register__errors">
+  <!-- <div class="Register__errors">
     <div class="Register__error"></div>
-  </div>
+  </div> -->
   <h2 class="Register__title Title">Sign up</h2>
   <div class="Register__body">
     <form method="post" class="Register__form" action="/api/auth/register">
@@ -11,6 +11,7 @@
         <input type="text" name="lname" placeholder="Nom" class="Form__entry Input__text Input__text--rounded" />
         <input type="text" name="fname" placeholder="Prénom" class="Form__entry Input__text Input__text--rounded" />
       </div>
+      <input type="number" name="age" placeholder="Age" class="Form__entry Input__text Input__text--rounded">
       <input type="text" name="username" placeholder="Login" class="Form__entry Input__text Input__text--rounded" />
       <input type="email" name="email" placeholder="Email address" class="Form__entry Input__text Input__text--rounded" />
       <input type="password" name="password" placeholder="Password" class="Form__entry Input__text Input__text--rounded" />
@@ -19,4 +20,22 @@
     </form>
   </div>
 </div>
+<script>
+$('.Register__form').on('submit', function(e) {
+    e.preventDefault();
+    $.ajax({
+      url: '/api/auth/register',
+      data: $(e.currentTarget).serialize(),
+      type: 'POST',
+      success: function(data) {
+        console.log(data.redirect)
+        if (typeof data.redirect == 'string')
+          window.location = data.redirect
+      },
+      error: function(err) {
+        Errors.add(err.responseJSON.error)
+      }
+    })
+  })
+</script>
 <%include partials/footer %>

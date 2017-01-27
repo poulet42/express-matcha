@@ -65,6 +65,8 @@ $(document).ready( function() {
         console.log('dismiss notification ')
       }
     })
+    if (typeof socket == "undefined")
+      return ;
     socket.on('notification', (notification) => {
       notif.create(notification)
     })

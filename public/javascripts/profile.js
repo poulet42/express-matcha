@@ -56,12 +56,12 @@ $(document).ready(function() {
 	var toggleBlock = $('#js-profile-block');
 	var thumbAdd = $('.Thumbnail__add');
 	var editLikeBtn = function(bool) {
-		toggleLike.removeClass('Loading').find('.Btn__text').text(bool === true ? "Dislike" : "Like")
-		toggleLike.find('.Btn__icon i').addClass('fa-heart').removeClass('fa-circle-o-notch fa-spin fa-fw')
+		toggleLike.find('.Btn__text').text(bool === true ? "Dislike" : "Like")
+		// toggleLike.find('.Btn__icon i').addClass('fa-heart').removeClass('fa-circle-o-notch fa-spin fa-fw')
 	}
 	var editBlockBtn = function(bool) {
-		toggleBlock.removeClass('Loading').find('.Btn__text').text(bool === true ? "Unblock" : "Block")
-		toggleBlock.find('.Btn__icon i').addClass('fa-ban').removeClass('fa-circle-o-notch fa-spin fa-fw')
+		toggleBlock.find('.Btn__text').text(bool === true ? "Unblock" : "Block")
+		// toggleBlock.find('.Btn__icon i').addClass('fa-ban').removeClass('fa-circle-o-notch fa-spin fa-fw')
 	}
 	$('.Tags__container').on('click', '.Tag__close', function(e) {
 		e.preventDefault()
@@ -102,7 +102,9 @@ $(document).ready(function() {
 				console.log(username)
 			},
 			error: function(err) {
-				console.log(err)
+				Errors.add(err.responseJSON.error)
+			},
+			complete: function() {
 				toggleLike.removeClass('Loading').find('.Btn__icon i').addClass('fa-ban').removeClass('fa-circle-o-notch fa-spin fa-fw')
 			}
 		})
@@ -123,7 +125,9 @@ $(document).ready(function() {
 				//socket.emit('send notification', {receiver: username, content: (likedStatus ? "a aimé" : "n'aime plus") + " votre profil"})
 			},
 			error: function(err) {
-				console.log(err)
+				Errors.add(err.responseJSON.error)
+			},
+			complete: function() {
 				toggleLike.removeClass('Loading').find('.Btn__icon i').addClass('fa-heart').removeClass('fa-circle-o-notch fa-spin fa-fw')
 			}
 		})

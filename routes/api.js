@@ -9,6 +9,7 @@ var notif = require('../lib/Notification.js')
 var mediaDir = __dirname + '/../public/upload/'
 var Chat = require('../lib/Chat.js')
 var Interests = require('../lib/Interests.js')
+var passwordHash = require('password-hash');
 module.exports = function(io) {
 	router.post('/auth/login', md.isGuest, function(req, res, next) {
 		Users.findByUsername(req.body.username, true)
@@ -16,11 +17,10 @@ module.exports = function(io) {
 			user = user[0]
 			if (!user) {
 				res.status(404).json({ error: 'User not found' })
-			} else if (user.password === req.body.password) {
+			} else if (passwordHash.verify(req.body.password, user.password)) {
 				req.session.user = {id: user.id, username: user.username}
 				res.status(200).json({redirect: '/profile/' + user.username})
 			} else {
-				console.log("user pass: " + user.password, req.body.password )
 				res.status(401).json({ error: 'Bad credentials' })
 			}
 		})
@@ -33,6 +33,8 @@ module.exports = function(io) {
 			if (user) {
 				res.status(401).json({error: "L'utilisateur existe déjà !"})
 			} else {
+				req.body.password = passwordHash.generate(req.body.password)
+				req.body.forgot = passwordHash.generate(req.body.username + (Math.random() * (100 - 2) + 2))
 				console.log('enregistrement en db : ')
 				console.log(req.body)
 				Users.register(req.body)
@@ -42,7 +44,7 @@ module.exports = function(io) {
 							else console.log('Repertoire utilisateur créé')
 						});
 					req.session.user = {id: dbRes.generated_keys[0], username: req.body.username}
-					res.status(200).json(req.session.user)
+					res.status(200).json({redirect: '/profile/' + req.session.user.username})
 				})
 			}
 		})
@@ -109,11 +111,15 @@ module.exports = function(io) {
 					to: targetedUser,
 					type: isLiked ? 'like' : 'dislike'
 				})
+				if (isLiked == true)
+					Users.addPopularity(req.params.username, 8)
 				return isLiked && Users.isLiked(targetedUser, currentUser) 
 			})
 			.then( (match) => {
 				swaglogger("Is it a match ? " + match)
 				if (match === true) {
+					Users.addPopularity(req.params.username, 3)
+					Users.addPopularity(req.session.user.username, 3)
 					sendNotification({from: currentUser, to: targetedUser, type: 'match'});
 					sendNotification({from: targetedUser, to: currentUser, type: 'match'});
 					return Chat.getChatRoomFromUsers([currentUser, targetedUser]).then( (roomId) => {
@@ -202,15 +208,22 @@ module.exports = function(io) {
 	var upload = multer({
 		storage,
 		limits: {fileSize: 1000000, files:1},
-		fileFilter
+		fileFilter,
+		onError : function(err, next) {
+			console.log("SHIIIIEEEET")
+			next("Sorry, this image doesn't fill the conditions, try another one");
+		}
 	}).single('profileImage')
 	router.post('/users/:username/photos', md.isAuth, upload, function(req, res, next) {
+		console.log("hola")
 		if (req.params.username == "me")
 			req.params.username = req.session.user.username
 		if (!req.file || req.session.user.username !== req.params.username) {
-			return res.status(401).send({err: "nope"})
+			return res.status(401).send({error: "Sorry, looks like it didn't work"})
 		}
 		Users.getPhotos(req.params.username, (error, result) => {
+			if (error)
+				return res.status(401).send({err: "Sorry, this image doesn't fill the conditions, try another one"})
 			var can = (result.length <= 5)
 			if (can) {
 				// Users.addPhoto(req.params.username, req.file.filename)
@@ -222,6 +235,12 @@ module.exports = function(io) {
 				})
 			}
 		})
+	})
+	router.use( (err, req, res, next) => {
+		var determineError = {
+			"LIMIT_FILE_SIZE": "Sorry, this file is too big, try another one"
+		}
+		res.status(401).send({error: determineError[err.code] || "Sorry, something went wrong"})
 	})
 	router.delete('/users/:username/photos/:imageid', md.isAuth, upload, function(req, res, next) {
 		if (req.params.username == "me")
@@ -352,7 +371,17 @@ module.exports = function(io) {
 	router.get('/users/:username/conversations', md.isAuth, (req, res, next) => {
 		if (req.params.username == req.session.user.username) {
 			Users.getChatRooms(req.params.username, {enabledOnly: true}).then( (result) => {
-				res.send(result)
+				swaglogger("CONVERSATIONS ::::::::")
+				Users.getBlacklist(req.session.user.username)
+				.then( (list) => {
+					return result.filter(function(current) {
+						swaglogger(current.users[1 - current.users.indexOf(req.session.user.username)])	
+						return list.indexOf(current.users[1 - current.users.indexOf(req.session.user.username)]) == -1
+					})
+				})
+				.then ( (result) => {
+					res.send(result)	
+				})
 			})
 		}
 	})

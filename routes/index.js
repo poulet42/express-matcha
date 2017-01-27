@@ -25,12 +25,19 @@ module.exports = function(io) {
 					console.log("is blocked ??", isBlocked)
 					user['isBlocked'] = isBlocked;
 					if (isBlocked == true)
+						console.log("Current user blocked visited profile")
+					return Users.isBlocked(req.session.user.username, user.id)
+				})
+				.then ( (isBlockedBack) => {
+					if (isBlockedBack)
 						return false;
 					Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
 					if (io.users[req.params.username]) {
 						io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
 					}
 				})
+				Users.addPopularity(req.params.username, 5)
+				user.popularity += 5;
 			}
 			userData = user;
 			return Users.isLiked(req.session.user.username, req.params.username)
@@ -48,40 +55,12 @@ module.exports = function(io) {
 				profile: userData
 			})
 		})
-
-
-		// .then( (user) => {
-		// 	user = user[0]
-		// 	if (!user) {
-		// 		return res.status(404).json({ error: 'User not found' })
-		// 	} else {
-		// 		if (req.params.username != req.session.user.username){
-		// 			Users.addNotifications({type: "check", receiver: req.params.username, emitter: req.session.user.username})
-		// 			if (io.users[req.params.username]) {
-		// 				io.users[req.params.username].emit('notification', notif({type: "check", receiver: req.params.username, emitter: req.session.user.username}))
-		// 			}
-		// 		}
-		// 		console.log(user)
-		// 		Users.isLiked(req.session.user.username, req.params.username)
-		// 		.then( (bool) => {
-		// 			user['likedStatus'] = bool;
-		// 			Users.isLiked(req.params.username, req.session.user.username)
-		// 			.then( (likedBack) => {
-		// 				user['likedBack'] = likedBack
-		// 				user['online'] = (typeof io.users[req.params.username] != 'undefined')
-		// 				console.log('ONLINE ? ', user['online'], io.users[req.params.username])
-		// 				console.log(user.likedStatus);
-		// 				res.render('profile', {
-		// 					title: 'Matcha - ' + req.params.username + '\'s Profile', 
-		// 					profile: user
-		// 				})
-		// 			})
-		// 		})
-
-		// 	}
-		// })
 	})
 	router.get('/dashboard', md.isAuth, (req, res, next) => {
+		Users.hasField(req.session.user.id, 'location')
+		.then( (boolLoc) => {
+			return boolLoc == true ? true : res.redirect('/profile/' + req.session.user.username)
+		}) 
 		Users.listByDistance(req.session.user.id)
 		.then( (usersList) => {
 			console.log("/!/\n\n\n---------\n\n\n",usersList,"\n\n\n---------\n\n\n")
@@ -105,6 +84,7 @@ module.exports = function(io) {
 			newUsersList = newUsersList.filter( (userCheck) => {
 				console.log("\n\n\n---------------\n\n\n", userCheck.doc.orientation, "\n\n\n---------------\n\n\n")
 				return (lookingFor.indexOf(userCheck.doc.gender) != -1
+					&& userCheck.doc.id != req.session.user.id
 					&& tabOrientation[userCheck.doc.orientation].indexOf(currUser.doc.gender) != -1
 					&& currUser.doc.blocked.indexOf(userCheck.doc.username) == -1)
 			})
@@ -115,6 +95,9 @@ module.exports = function(io) {
 		res.render('register', { title: 'Matcha - Register'})
 	})
 
+	router.get('/forgot', md.isGuest, (req, res, next) => {
+		res.render('forgot', {title: "Matcha - page finie a la pisse"})
+	})
 	router.get('/logout', (req, res, next) => {
 		delete io.users[req.session.username];
 		delete req.session.user

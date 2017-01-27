@@ -17,7 +17,6 @@ var Errors = {
   },
   add: function(msg) {
     this.errs.push(msg)
-    this.errs.push(msg)
     $(this.el).trigger("newErr")
   },
   flush: function() {

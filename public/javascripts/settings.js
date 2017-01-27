@@ -29,7 +29,7 @@
 		return geolocator.geocode(address, cb)
 	}
 	var saveAddress = function(err, location) {
-		if (err) return alert('addresse invalide');
+		if (err) return Errors.add('Addresse invalide');
 		console.log(location)
 		$.ajax({
 			url: 'https://localhost:3001/api/users/me/location',
@@ -79,6 +79,9 @@
 				$('.Settings__photos').find('.Photos__item--selected').removeClass('Photos__item--selected')
 				$('.Settings__photos').children().first().after("<div class='Photos__item Photos__item--selected Photos__item--selectable'><img src='" + result.path + "' ></div>")
 				// $('.Profile__thumbnail').css({'backgroundImage': 'url("' +  result.path + '")'})
+			},
+			error: function(err) {
+				Errors.add(err.responseJSON.error)
 			}
 		})
 	})

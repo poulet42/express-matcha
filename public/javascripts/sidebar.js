@@ -12,6 +12,7 @@ $(document).ready(function() {
 			$('body').removeClass('utils-prevent-scroll')
 		}
 		getConversationData({id: chatItem.data('chatid'), connectedTo: chatItem.data('chatwith')}, populateConversation)
+		$(this).parent().removeClass("Match__Item--unread")
 	})
 
 
@@ -84,8 +85,11 @@ $(document).ready(function() {
     		$('.Messages__wrapper').scrollTop($('.Messages__wrapper')[0].scrollHeight)
     	}
     	else {
-    		console.log('user not focusing good chat !, notification ?')
     		console.log(message.username != me)
+    		var currentToggle = $('.Match__Item[data-chatid=' + message.chat + ']')
+    		if (currentToggle.length > 0) {
+    			currentToggle.addClass("Match__Item--unread")
+    		}
     	}
     })
 })

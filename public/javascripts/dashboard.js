@@ -69,7 +69,7 @@ $(document).ready(function() {
 		card += "<a href='/profile/" + curr.doc.username + "'>" + curr.doc.username + "</a>"
 		card += " <i class='fa fa-" + (curr.doc.gender == "female" ? "venus" : "mars") + "'></i> - " + curr.doc.age + "</div>"
 		card += "<div class='Card__item Card__location'><i class='fa fa-map-marker'></i>" + Math.round(curr.dist / 1000).toFixed(2) + " kilometers</div>"
-		card += "<div class='Card__item Card__popularity'><i class='fa fa-fire'></i></div>"
+		card += "<div class='Card__item Card__popularity'><i class='fa fa-fire'></i>" + curr.doc.popularity + "</div>"
 		if (curr.doc.interests.length > 0) {
 			card += "<div class='Card__item Card__tags'> \
 			<i class='fa fa-tag'></i> \
