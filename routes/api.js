@@ -330,11 +330,11 @@ module.exports = function(io) {
 		Chat.getData(req.params.chatId)
 		.then( (result) => {
 			if (!result)
-				res.status(404).send({err: "Nope, ce chat n'existe pas"})
+				res.status(404).send({error: "Nope, ce chat n'existe pas"})
 			else if (result.users.indexOf(req.session.user.username) == -1)
-				res.status(401).send({err: "Vous ne participez pas a cette discussion"})
+				res.status(401).send({error: "Vous ne participez pas a cette discussion"})
 			else if (result.enabled != true)
-				res.status(401).send({err: "Ce chat n'est plus actif"})
+				res.status(401).send({error: "Ce chat n'est plus actif"})
 			else {
 				res.status(200).send(result);
 			}
@@ -363,7 +363,7 @@ module.exports = function(io) {
 				return res.send(req.body)
 			} else {
 				swaglogger('mehh');
-				return res.send({err: "nope, sry"})
+				return res.status(401).send({error: "Vous ne pouvez plus discuter"})
 			}
 		}) 
 

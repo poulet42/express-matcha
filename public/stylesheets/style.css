@@ -463,6 +463,12 @@ input, button, textarea {
   width: 960px
 }
 
+.Register__title {
+  margin-top: 60px;
+  display: inline-block;
+  width: 100%;
+}
+
 /**
  *
  * Login page

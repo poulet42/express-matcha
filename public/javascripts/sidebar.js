@@ -63,6 +63,9 @@ $(document).ready(function() {
 			data: formdata,
 			success: function(data) {
 				console.log('sweg')
+			},
+			error: function(err) {
+				Errors.add(err.responseJSON.error)
 			}
 		})
 	})

@@ -64,7 +64,6 @@
 	}
 	Notification.prototype.dismiss = function(notificationDom) {
 		this.options.beforeDismiss(notificationDom)
-		console.log('DISMISS ASKED ! ', notificationDom)
 		this.options.onDismiss(notificationDom)
 		this.options.afterDismiss(notificationDom)
 	}
