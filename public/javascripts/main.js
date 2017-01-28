@@ -13,6 +13,7 @@ $(document).ready( function() {
     e.stopPropagation()
     //$(this).toggleClass('w-active').siblings('.Menu').toggleClass('w-active');
     currentMenu.toggleClass('w-active')
+    $(this).trigger(currentMenu.is('.w-active') ? 'menuOpen' : 'menuClose')
   })
 
   $('.Dropdown__toggle').on('click', function(e) {
@@ -68,7 +69,15 @@ $(document).ready( function() {
     if (typeof socket == "undefined")
       return ;
     socket.on('notification', (notification) => {
+      var toggle = $('.Notifications__toggle');
+      var menu = toggle.siblings('.Menu');
+      if(!menu.is('.w-active')) {
+        toggle.addClass('unread')
+      }
       notif.create(notification)
+    })
+    $('.Notifications__toggle').on('menuOpen', function() {
+      $(this).removeClass('unread')
     })
   // } else {
   //   console.log('shieeet')

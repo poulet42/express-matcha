@@ -49,6 +49,24 @@ module.exports = function(io) {
 			}
 		})
 	})
+	router.put('/users/me/password', md.isGuest, md.validateEditPw, function(req, res, next) {
+		if (req.body.newP === req.body.newPconf) {
+			Users.matchHash(req.body.username, req.body.hash)
+			.then( (isOk) => {
+				if (isOk == true) {
+					Users.setPassword(req.body.username, passwordHash.generate(req.body.newP), passwordHash.generate(req.body.username + (Math.random() * (100 - 2) + 2)))
+					return res.status(200).send({ok: true})
+				}
+				else {
+					return res.status(401).send({error: "Check your url pls"})
+				}
+			})
+		} else {
+			return res.status(401).send({error: "passwords doesn't match"})
+		}
+
+		
+	})
 	router.get('/users/', md.isAuth, function(req, res, next) {
 		Users.list()
 		.then( (result) => {
@@ -66,6 +84,12 @@ module.exports = function(io) {
 			res.send(user)
 		})
 	});
+
+	router.post('/users/me/identity', md.isAuth, md.validateIdentity, function(req, res, next) {
+		Users.updateIdentity(req.session.user.id, req.body)
+		return res.status(200).send({f: req.body.fname, l: req.body.lname});
+		
+	})
 	router.get('/users/:username/photos', md.isAuth, function(req, res, next) {
 		if (req.params.username == "me")
 			req.params.username = req.session.user.username
@@ -237,6 +261,8 @@ module.exports = function(io) {
 		})
 	})
 	router.use( (err, req, res, next) => {
+		swaglogger("WHAT DA FCK HAPPEND");
+		swaglogger(err);
 		var determineError = {
 			"LIMIT_FILE_SIZE": "Sorry, this file is too big, try another one"
 		}

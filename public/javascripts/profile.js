@@ -105,7 +105,7 @@ $(document).ready(function() {
 				Errors.add(err.responseJSON.error)
 			},
 			complete: function() {
-				toggleLike.removeClass('Loading').find('.Btn__icon i').addClass('fa-ban').removeClass('fa-circle-o-notch fa-spin fa-fw')
+				toggleBlock.removeClass('Loading').find('.Btn__icon i').addClass('fa-ban').removeClass('fa-circle-o-notch fa-spin fa-fw')
 			}
 		})
 	})

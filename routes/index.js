@@ -4,6 +4,7 @@ var md = require('../lib/middlewares.js')
 var rdb = require('../lib/database.js')
 var Users = require('../lib/User.js')
 var notif = require('../lib/Notification.js')
+var sendmail = require('sendmail')();
 module.exports = function(io) {
 	router.get('/', function(req, res, next) {
 		res.render('index', { title: 'Matcha - Home' });
@@ -16,6 +17,7 @@ module.exports = function(io) {
 			return userArray[0]
 		})
 		.then( (user) => {
+			console.log("\n\n\n-----------\n\n\n", user, "\n\n\n-----------\n\n\n")
 			if (!user) {
 				res.status(404).json({ error: 'User not found' })
 				return next({error: 'User not found'})
@@ -72,6 +74,12 @@ module.exports = function(io) {
 			// console.log('current user looking for : ', lookingFor, 'and is a : ', isLookedBy)
 			console.log(currUser);
 			var newUsersList = usersList.map( (elem) => {
+				delete elem.doc.password;
+				delete elem.doc.email;
+				delete elem.doc.id;
+				delete elem.doc.formattedAddress;
+				if (elem.doc.id != currUser.doc.id)
+					delete elem.doc.blocked;
 				elem.doc.interests = elem.doc.interests.filter( (interestCursor) => {
 					console.log('curs', interestCursor)
 					return currUser.doc.interests.map( (e) => {
@@ -96,7 +104,33 @@ module.exports = function(io) {
 	})
 
 	router.get('/forgot', md.isGuest, (req, res, next) => {
-		res.render('forgot', {title: "Matcha - page finie a la pisse"})
+		return res.render('forgot', {title: "Matcha - bjr"})
+	})
+	router.post('/forgot', md.isGuest, (req, res, next) => {
+		var error = null;
+		Users.findByUsername(req.body.username)
+		.then( user => {
+			if (user[0]) {
+				user = user[0];
+				sendmail({
+					from: 'cprune@student.42.fr',
+					to: user.email,
+					subject: 'bjr',
+					html: '<a href="https://localhost:3001/forgot/' + user.forgot + '">bjr</a>',
+				}, function(err, reply) {
+					error = "Error while sending the mail"
+				});	
+			} else {
+				return res.status(401).send({error: "User not found"})
+			}
+			if (error != null)
+				return res.status(401).send({error})
+			else
+				return res.status(200).send({ok: true})
+		})
+	})
+	router.get('/forgot/:forgotid', (req, res, next) => {
+		res.render('editpass', {title: "Matcha - bjrlol", userhash: req.params.forgotid})
 	})
 	router.get('/logout', (req, res, next) => {
 		delete io.users[req.session.username];

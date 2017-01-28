@@ -2,7 +2,7 @@
 <section class="Container">
 	<div class="Dashboard__wrapper">
 		<div class="Dashboard__filters">
-			<div class="Dropdown Sort__Dropdown" data-placeholder="Location" data-sort="Location">
+			<div class="Dropdown Sort__Dropdown Filter__entry" data-placeholder="Location" data-sort="Location">
 				<span class="Dropdown__label Dropdown__toggle">Sort by</span>
 				<div class="Dropdown__selected Dropdown__toggle">Location</div>
 				<div class="Dropdown__list">
@@ -28,8 +28,12 @@
 				<span class="Filter__label">Common Tags</span>
 				<input type="number" class="Filter__input" data-filter="mintags" min="0" max="50" value="0">
 			</div>
+			<div class="Filter__entry">
+				<span class="Filter__label">Popularity</span>
+				<input type="number" class="Filter__input" data-filter="popularity" min="0" max="5000" value="0">
+			</div>
 		</div>
-		<div class="Dashboard__grid utils-clearfix">
+		<div class="Dashboard__grid utils-hidden utils-clearfix">
 			<% users.forEach(function(curr) { %>
 			<% if (curr.doc.id != user.id) { %>
 			<div class="Dashboard__card">
@@ -40,7 +44,7 @@
 					<% } %>
 					></div></a>
 					<div class='Card__content'>
-						<div class="Card__item Card__username"><i class="fa fa-user"></i><%- "<a href='/profile/" + curr.doc.username + "'>" + curr.doc.username + "</a>"%> <i class='fa fa-<%= curr.doc.gender == "female" ? "venus" : "mars" %>'></i> -  <%= curr.doc.age %></div>
+						<div class="Card__item Card__username"><i class="fa fa-user"></i><%- "<a href='/profile/" + curr.doc.username + "'>" + curr.doc.username + "</a>"%> <i class='fa fa-<%= {male: "mars", female: "venus", unknown: "genderless"}[curr.doc.gender] %>'></i> -  <%= curr.doc.age %></div>
 						<div class='Card__item Card__location'><i class="fa fa-map-marker"></i><%=  Math.round(curr.dist / 1000).toFixed(2) %> kilometers</div>
 						<div class='Card__item Card__popularity'><i class="fa fa-fire"></i><%= curr.doc.popularity %></div>
 						<% if (curr.doc.interests.length > 0) { %>

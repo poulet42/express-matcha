@@ -1,7 +1,8 @@
 $(document).ready(function() {
-	$('#test').remove();
+	$('#mdr').remove();
+	
 	$('.Sort__Dropdown').on('dropChange', function(e, val) {
-		console.log('shit')
+		// console.log('shit')
 		sortProfilesBy({
 			sort: val,
 			data: filterUsers(users)
@@ -33,24 +34,28 @@ $(document).ready(function() {
 	}
 
 	var filterUsers = function(userTab) {
-		var ageMin = Math.max(parseInt($('.Filter__input[data-filter="agemin"]').val()), 12)
-		var ageMax = Math.min(parseInt($('.Filter__input[data-filter="agemax"]').val()), 90)
-		var distMax = Math.min(parseInt($('.Filter__input[data-filter="distmax"]').val()) * 1000, 200000)
+		var ageMin = Math.max(parseInt($('.Filter__input[data-filter="agemin"]').val()), 0)
+		var ageMax = Math.min(parseInt($('.Filter__input[data-filter="agemax"]').val()), 100)
+		var distMax = Math.min(parseInt($('.Filter__input[data-filter="distmax"]').val()) * 1000, 500000)
 		var commonTagsMin = Math.max(parseInt($('.Filter__input[data-filter="mintags"]').val()), 0) || 0
-		console.log("filter with :", "age > " + ageMin + " < " + ageMax, "dist < " + distMax, "common tags > " + commonTagsMin)
+		var popularityMin = Math.max(parseInt($('.Filter__input[data-filter="popularity"]').val()), 0) || 0
+		// console.log("filter with :", "age > " + ageMin + " < " + ageMax, "dist < " + distMax, "common tags > " + commonTagsMin)
 		return userTab.filter( function(elem) {
-			console.log(elem.dist)
-			return (elem.doc.age >= ageMin && elem.doc.age <= ageMax &&
+			// console.log(elem.dist)
+			return (elem.doc.age >= ageMin && elem.doc.age <= ageMax && popularityMin <= elem.doc.popularity &&
 				elem.dist <= parseInt(distMax) && elem.doc.interests.length >= commonTagsMin
 				)
 		})
 	}
 	var populateDashboard = function(sortedUsers) {
 		var fakeDashboard = $("<div></div>");
-		for (var i = sortedUsers.length - 1; i >= 0; i--) {
-			fakeDashboard.append(createCard(sortedUsers[i]))
-		}
-		$('.Dashboard__grid').html(fakeDashboard.children())
+		if (sortedUsers.length > 0) {
+			for (var i = sortedUsers.length - 1; i >= 0; i--) {
+				fakeDashboard.append(createCard(sortedUsers[i]))
+			}
+			$('.Dashboard__grid').html(fakeDashboard.children())
+		} else 
+			$('.Dashboard__grid').html("<span style='display:block; text-align:center;padding: 20px 0; font-size: 24px; color: #999;'>Pas de résultats</span>")
 	}
 
 	var createCard = function(curr) {
@@ -82,4 +87,10 @@ $(document).ready(function() {
 		card += "</div></div>"
 		return card;
 	}
+	sortProfilesBy({
+		sort: $('.Sort__Dropdown').data('value'),
+		data: filterUsers(users)
+	}, populateDashboard);
+	$('.Dashboard__grid').removeClass('utils-hidden')
+
 })

@@ -20,7 +20,6 @@
 
 	Notification.prototype._init = function() {
 		if (this.options.source.type === "array" && this.options.source.data.length > 0) {
-			console.log('source from array')
 			this.renderPrimarySource(this.options.source.data)
 		} else if (this.options.source.type === "ajax") {
 			var url = this.options.source.data;
@@ -40,7 +39,6 @@
 	}
 
 	Notification.prototype.renderPrimarySource = function(source) {
-			console.log('rendering first notifications')
 			for (var i = 0, j = Math.min(source.length, this.options.limit) - 1; i <= j; i++) {
 				this.create(source[i])
 			}

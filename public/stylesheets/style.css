@@ -380,6 +380,15 @@ input, button, textarea {
   overflow-y: auto;
 }
 
+.Notifications__toggle.unread::after {
+  content: '\f111';
+  font-family: fontawesome;
+  font-size: 9px;
+  position: absolute;
+  color: #d25a5a;
+  top: -8px;
+  right: 15px;
+}
 
 /**
  *
@@ -1269,12 +1278,13 @@ textarea.User__biography:focus {
      *
      */
 
-     .Dropdown, .Filter__entry {
+
+     .Filter__entry {
       position: relative;
       font-size: 10px;
       color: #666;
       margin: 20px 10px; 
-      min-width: 140px;
+      /*min-width: 140px;*/
       flex: 1;
     }
 
@@ -1524,52 +1534,54 @@ textarea.User__biography:focus {
       background-color: #efefef;
     }
     @media screen and (min-width: 1025px) {
-      .Dashbaord__wrapper {
+      .Filter__entry:first-child {margin-left: 0}
+      .Filter__entry:last-child {margin-right: 0}
+      /*.Dashboard__wrapper {
         padding: 10px 20px;
+        }*/
+        .Dashboard__card {
+          width: calc(1/4 * 100% - 3 * 20px / 4);
+        }
+        .Dashboard__card:nth-child(4n) {
+          margin-right: 0;
+        }
+        .Dashboard__card:nth-child(4n + 1) {
+          margin-left: 0;
+        }
       }
-      .Dashboard__card {
-        width: calc(1/4 * 100% - 3 * 20px / 4);
+      @media screen and (max-width: 1024px) {
+        .Dashboard__grid {
+          padding: 0 20px 10px;
+        }
+        .Dashboard__filters {
+          flex-direction: column;
+        }
+        .Dropdown__item, .Dropdown__selected, .Filter__input {
+          padding: 16px 12px;
+        }
+        .Dashboard__card {
+          width: calc(1/2 * 100% - 20px / 2)
+        }
+        .Dashboard__card:nth-child(2n) {
+          margin-right: 0;
+        }
+        .Dashboard__card:nth-child(2n + 1) {
+          margin-left: 0;
+        }
       }
-      .Dashboard__card:nth-child(4n) {
-        margin-right: 0;
-      }
-      .Dashboard__card:nth-child(4n + 1) {
-        margin-left: 0;
-      }
-    }
-    @media screen and (max-width: 1024px) {
-      .Dashboard__grid {
-        padding: 0 20px 10px;
-      }
-      .Dashboard__filters {
-        flex-direction: column;
-      }
-      .Dropdown__item, .Dropdown__selected, .Filter__input {
-        padding: 16px 12px;
-      }
-      .Dashboard__card {
-        width: calc(1/2 * 100% - 20px / 2)
-      }
-      .Dashboard__card:nth-child(2n) {
-        margin-right: 0;
-      }
-      .Dashboard__card:nth-child(2n + 1) {
-        margin-left: 0;
-      }
-    }
 
-    @media screen and (max-width: 680px) {
-      .Dashboard__filters {
-        margin-bottom: 0;
+      @media screen and (max-width: 680px) {
+        .Dashboard__filters {
+          margin-bottom: 0;
+        }
+        .Dashboard__card {
+          width: 100%;
+        }
+        .Dashboard__card:nth-child(2n), .Dashboard__card:nth-child(2n + 1) {margin: 0;}
+        .Dashboard__grid {
+          padding: 0;
+        }
+        .Dashboard__card:hover {
+          transform: scale(1);
+        }
       }
-      .Dashboard__card {
-        width: 100%;
-      }
-      .Dashboard__card:nth-child(2n), .Dashboard__card:nth-child(2n + 1) {margin: 0;}
-      .Dashboard__grid {
-        padding: 0;
-      }
-      .Dashboard__card:hover {
-        transform: scale(1);
-      }
-    }

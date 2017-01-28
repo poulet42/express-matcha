@@ -66,6 +66,22 @@
 		isAddressValid(address, saveAddress);
 	})
 
+	$('.Identity__form').on("submit", function(e) {
+		e.preventDefault();
+		var formIdentity = $(this);
+		$.ajax({
+			url: "https://localhost:3001/api/users/me/identity",
+			type: "POST",
+			data: formIdentity.serialize(),
+			success: function(result) {
+				$('.Name__first').text(result.f)
+				$('.Name__last').text(result.l)
+			},
+			error: function(err) {
+				Errors.add(err.responseJSON.error)	
+			}
+		})
+	})
 	$('.Photos__add').on('change', function() {
 		$.ajax({
 			url: "https://localhost:3001/api/users/me/photos",

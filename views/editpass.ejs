@@ -1,0 +1,29 @@
+<% include ./partials/header %>
+<form action="" class="Password-edit__form" style="margin-top:120px;">
+	<input type="text" name="username" placeholder="username">
+	<input type="hidden" name="hash" value="<%= userhash %>">
+	<input type="password" name="newP" id="" placeholder="password">
+	<input type="password" name="newPconf" id="" placeholder="password confirmation">
+	<input type="submit" value="k">
+</form>
+<script>
+
+	var sendPw = function(data) {
+		$.ajax({
+			url: "https://localhost:3001/api/users/me/password",
+			method: "PUT",
+			data,
+			success: function() {
+				alert('c bon')
+			},
+			error: function(err) {
+				Errors.add(err.responseJSON.error)
+			}
+		})
+	}
+	$('.Password-edit__form').on('submit', function(e){
+		e.preventDefault();
+		return sendPw($(this).serialize());
+	})
+</script>
+<% include ./partials/footer %>

@@ -2,9 +2,24 @@
 	<h3 class="Settings__title">Account Settings</h3>
 	<div class="Settings__container">
 		<div class="Settings__entry">
+			<div class="Settings__label">Identity</div>
+			<div class="Settings__body">
+				<form class="Identity__form">
+					<div class="Form__row">
+						<input type="text" name="fname" class="Form__entry Input__text Input__text--rounded" placeholder="First name" value="<%= profile.firstname %>">
+						<input type="text" name="lname" class="Form__entry Input__text Input__text--rounded" placeholder="Last name" value="<%= profile.lastname %>">
+					</div>
+					<input type="email" name="email" class="Form__entry Input__text Input__text--rounded" placeholder="Email address" value="<%= profile.email %>">
+					<div class="Settings__actions">
+						<button type="submit" class="Settings__button">Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="Settings__entry">
 			<div class="Settings__label">Gender</div>
 			<div class="Settings__body">
-			<div class="Switch__container">
+				<div class="Switch__container">
 					<div class="Switch">
 						<div class="Switch__choice">
 							<input type="radio" value="0" name="gender" id="male" class="utils-hidden Gender__choice Switch__toggle" <%= profile.gender === "male" ? "checked" : "" %> />
@@ -25,7 +40,7 @@
 		<div class="Settings__entry">
 			<div class="Settings__label">Sexual orientation</div>
 			<div class="Settings__body">
-			<div class="Switch__container">
+				<div class="Switch__container">
 					<div class="Switch">
 						<div class="Switch__choice">
 							<input type="radio" value="0" name="orientation" id="boys" class="utils-hidden Orientation__choice Switch__toggle" <%= profile.orientation === "boys" ? "checked" : "" %> />
